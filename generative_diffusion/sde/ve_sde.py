@@ -1,0 +1,42 @@
+# sde/ve_sde.py
+from __future__ import annotations
+
+import torch
+from torch import Tensor
+
+from .base_sde import BaseSDE
+
+
+class VESDE(BaseSDE):
+    """
+    Variance‑Exploding SDE (sigma ≈ 25 en Song et al., 2021).
+    """
+
+    def __init__(self, *, sigma: float = 25.0) -> None:
+        if sigma <= 1.0:
+            raise ValueError("`sigma` debe ser > 1 para VE‑SDE.")
+        super().__init__()
+        self.sigma = float(sigma)
+
+    # ------------------------------------------------------------------ #
+    # Forward                                                            #
+    # ------------------------------------------------------------------ #
+    def drift(self, x_t: Tensor, t: Tensor) -> Tensor:
+        return torch.zeros_like(x_t)
+
+    def diffusion(self, t: Tensor) -> Tensor:
+        return self.sigma**t
+
+    def mu_t(self, x_0: Tensor, t: Tensor) -> Tensor:
+        return x_0
+
+    def sigma_t(self, t: Tensor) -> Tensor:
+        log_sigma = torch.log(torch.tensor(self.sigma, device=t.device))
+        return torch.sqrt(0.5 * (self.sigma ** (2 * t) - 1.0) / log_sigma)
+
+    # ------------------------------------------------------------------ #
+    # Backward                                                           #
+    # ------------------------------------------------------------------ #
+    def backward_drift(self, x_t: Tensor, t: Tensor, score_fn) -> Tensor:
+        g_t = self.diffusion(t).view(-1, *([1] * (x_t.ndim - 1)))
+        return -(g_t**2) * score_fn(x_t, t)

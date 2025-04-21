@@ -1,0 +1,30 @@
+# Ignorar entorno virtual de Python
+.venv/
+venv/
+
+# Ignorar ruff
+.ruff_cache/
+
+# Ignorar caches de Python
+__pycache__/
+*.py[cod]
+*.so
+
+# Ignorar archivos temporales y de backups
+*.log
+*.tmp
+*.swp
+*~
+
+# Ignorar archivos de VSCode
+.vscode/
+
+# Ignorar configuraciones de Jupyter
+.ipynb_checkpoints/
+
+# Ignorar datasets y resultados temporales si es necesario
+data/
+results/
+
+# Otros archivos de entorno
+.env

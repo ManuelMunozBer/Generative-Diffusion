@@ -1,0 +1,80 @@
+# diffusion/diffusion_factory.py
+from __future__ import annotations
+
+import logging
+from typing import Any, Dict, Optional, Tuple, Type, Union
+
+import torch
+from torch import nn
+
+from generative_diffusion.score_networks import BaseScoreModel
+
+
+# --------------------------------------------------------------------- #
+# Factory                                                               #
+# --------------------------------------------------------------------- #
+class ModelFactory:
+    """
+    Crea un :class:`DiffusionModel` completamente configurado.
+    """
+
+    @staticmethod
+    def create(
+        *,
+        score_model_class: Type[BaseScoreModel],
+        is_conditional: bool,
+        sde_name: str,
+        sampler_name: str,
+        scheduler_name: Optional[str] = None,
+        model_kwargs: Optional[Dict[str, Any]] = None,
+        sde_kwargs: Optional[Dict[str, Any]] = None,
+        sampler_kwargs: Optional[Dict[str, Any]] = None,
+        scheduler_kwargs: Optional[Dict[str, Any]] = None,
+        device: Optional[Union[str, torch.device]] = None,
+        checkpoint_path: Optional[str] = None,
+        data_shape: Optional[Tuple[int, ...]] = None,
+        logger: Optional[logging.Logger] = None,
+    ):
+        # imports tardíos para evitar ciclos
+        from generative_diffusion.sde import get_sde
+        from generative_diffusion.samplers import get_sampler
+        from generative_diffusion.schedulers import get_scheduler
+        from .diffusion_core import DiffusionModel
+
+        if not issubclass(score_model_class, (BaseScoreModel, nn.Module)):
+            raise TypeError(
+                "`score_model_class` debe heredar de BaseScoreModel o nn.Module."
+            )
+
+        model_kwargs = model_kwargs or {}
+        sde_kwargs = sde_kwargs or {}
+        sampler_kwargs = sampler_kwargs or {}
+        scheduler_kwargs = scheduler_kwargs or {}
+
+        # scheduler (solo si la SDE lo requiere)
+        if scheduler_name is not None:
+            scheduler = get_scheduler(scheduler_name, **scheduler_kwargs)
+            sde_kwargs["scheduler"] = scheduler
+
+        sde = get_sde(sde_name, **sde_kwargs)
+        sampler = get_sampler(sampler_name, **sampler_kwargs)
+
+        model_kwargs = model_kwargs.copy()
+        model_kwargs.setdefault("marginal_prob_std", sde.sigma_t)
+
+        diffusion = DiffusionModel(
+            score_model_class=score_model_class,
+            is_conditional=is_conditional,
+            sde=sde,
+            sampler=sampler,
+            model_kwargs=model_kwargs,
+            device=device,
+            logger=logger,
+        )
+
+        if data_shape is not None:
+            diffusion.data_shape = data_shape
+        if checkpoint_path is not None:
+            diffusion.load_score_model(checkpoint_path)
+
+        return diffusion
