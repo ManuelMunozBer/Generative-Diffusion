@@ -35,6 +35,68 @@ class ModelFactory:
         data_shape: Optional[Tuple[int, ...]] = None,
         logger: Optional[logging.Logger] = None,
     ):
+        """
+        Crea una instancia del modelo de difusión configurado
+        con los componentes especificados.
+
+        Esta función estática permite construir una instancia
+        completa de `DiffusionModel`, incluyendo el modelo de score,
+        la SDE, el sampler, el scheduler (si aplica), así como todos los argumentos
+        personalizados necesarios para su inicialización.
+
+        Parameters
+        ----------
+        score_model_class : Type[BaseScoreModel]
+            Clase del modelo de score. Debe heredar de `BaseScoreModel`
+            o `torch.nn.Module`.
+        is_conditional : bool
+            Indica si el modelo es condicional.
+        sde_name : str
+            Nombre de la SDE a utilizar. Valores válidos:
+            - "ve_sde"     : Variance Exploding SDE
+            - "vp_sde"     : Variance Preserving SDE
+            - "subvp_sde"  : Sub-Variance Preserving SDE
+        sampler_name : str
+            Nombre del método de muestreo. Valores válidos:
+            - "euler_maruyama"
+            - "predictor_corrector"
+            - "probability_flow_ode"
+            - "exponential_integrator"
+        scheduler_name : Optional[str], default=None
+            Nombre del scheduler temporal (si la SDE lo requiere). Valores válidos:
+            - "constant"
+            - "linear"
+            - "cosine"
+        model_kwargs : Optional[Dict[str, Any]], default=None
+            Argumentos adicionales para inicializar el modelo de score.
+        sde_kwargs : Optional[Dict[str, Any]], default=None
+            Argumentos adicionales para configurar la SDE.
+        sampler_kwargs : Optional[Dict[str, Any]], default=None
+            Argumentos adicionales para configurar el sampler.
+        scheduler_kwargs : Optional[Dict[str, Any]], default=None
+            Argumentos adicionales para configurar el scheduler (si aplica).
+        device : Optional[Union[str, torch.device]], default=None
+            Dispositivo de ejecución, por ejemplo `"cuda"` o `"cpu"`.
+        checkpoint_path : Optional[str], default=None
+            Ruta al archivo `.pt` o `.ckpt` con los pesos del modelo entrenado.
+        data_shape : Optional[Tuple[int, ...]], default=None
+            Forma esperada de los datos de entrada (ej. `(3, 32, 32)` para imágenes).
+        logger : Optional[logging.Logger], default=None
+            Logger opcional para registrar el proceso.
+
+        Returns
+        -------
+        DiffusionModel
+            Instancia completamente configurada del modelo de difusión.
+
+        Raises
+        ------
+        TypeError
+            Si `score_model_class` no hereda de `BaseScoreModel` o `nn.Module`.
+        ValueError
+            Si el nombre del sampler, scheduler o SDE no corresponde a los disponibles.
+        """
+
         # imports tardíos para evitar ciclos
         from generative_diffusion.sde import get_sde
         from generative_diffusion.samplers import get_sampler

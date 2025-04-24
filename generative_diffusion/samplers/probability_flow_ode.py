@@ -1,6 +1,7 @@
 # samplers/probability_flow_ode.py
 from __future__ import annotations
 
+import logging
 from typing import Callable, Optional, Tuple
 
 import torch
@@ -12,8 +13,11 @@ from generative_diffusion.controllable import BaseController
 
 class ProbabilityFlowODESampler(BaseSampler):
     """
-    ODE determinista equivalente a la SDE (Song et al., 2021).
+    ODE determinista equivalente a la SDE (Song et al., 2021) corregido.
     """
+
+    def __init__(self, *, logger: Optional[logging.Logger] = None) -> None:
+        self.logger = logger or logging.getLogger(__name__)
 
     def sample(
         self,
@@ -40,17 +44,25 @@ class ProbabilityFlowODESampler(BaseSampler):
 
         score_fn = self._prepare_score_model(score_model, condition)
 
-        for i, t in enumerate(times[:-1]):
-            t_batch = torch.full((x_0.shape[0],), t, device=device, dtype=x_0.dtype)
-            score = score_fn(traj[i], t_batch)
+        x = x_0.clone()
+        for i in range(n_steps):
+            t = times[i]
+            t_batch = torch.full((x.shape[0],), t, device=device, dtype=x.dtype)
 
-            drift = sde.backward_drift(traj[i], t_batch, score_fn)
-            diffusion = sde.diffusion(t_batch).view(-1, *([1] * (traj[i].ndim - 1)))
-            drift_ode = drift - 0.5 * diffusion.pow(2) * score
+            # Calcular el score y el drift de la SDE inversa
+            score = score_fn(x, t_batch)
+            drift_sde = sde.backward_drift(x, t_batch, score_fn)
+            diffusion = sde.diffusion(t_batch).view(-1, *([1] * (x.ndim - 1)))
 
-            x = traj[i] + drift_ode * dt
+            # Drift de la ODE corregido: sumar 0.5 * g(t)^2 * score
+            drift_ode = drift_sde + 0.5 * diffusion**2 * score
+
+            # Integración de Euler
+            x = x + drift_ode * dt
+
             if controller is not None:
                 x = controller.process_step(x_t=x, t=t_batch)
+
             traj[i + 1] = x
 
         return times, traj

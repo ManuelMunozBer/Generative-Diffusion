@@ -20,19 +20,22 @@ class VPSDE(SchedulerBasedSDE):
 
     # Forward
     def drift(self, x_t: Tensor, t: Tensor) -> Tensor:
-        return -0.5 * self.beta_t(t).view(-1, *([1] * (x_t.ndim - 1))) * x_t
+        beta = self._broadcast(self.beta_t(t), x_t)
+        return -0.5 * beta * x_t
 
     def diffusion(self, t: Tensor) -> Tensor:
         return torch.sqrt(self.beta_t(t))
 
     def mu_t(self, x_0: Tensor, t: Tensor) -> Tensor:
-        a_bar = self.scheduler.alpha_bar(t).view(-1, *([1] * (x_0.ndim - 1)))
-        return torch.sqrt(a_bar) * x_0
+        a_bar = self.scheduler.alpha_bar(t)
+        return self._broadcast(torch.sqrt(a_bar), x_0) * x_0
 
     def sigma_t(self, t: Tensor) -> Tensor:
-        return torch.sqrt(1.0 - self.scheduler.alpha_bar(t))
+        a_bar = self.scheduler.alpha_bar(t)
+        return torch.sqrt(1.0 - a_bar)
 
     # Backward
     def backward_drift(self, x_t: Tensor, t: Tensor, score_fn) -> Tensor:
-        beta = self.beta_t(t).view(-1, *([1] * (x_t.ndim - 1)))
-        return -0.5 * beta * (x_t + score_fn(x_t, t))
+        beta = self._broadcast(self.beta_t(t), x_t)
+        g = self._broadcast(self.diffusion(t), x_t)
+        return -0.5 * beta * x_t - (g**2) * score_fn(x_t, t)

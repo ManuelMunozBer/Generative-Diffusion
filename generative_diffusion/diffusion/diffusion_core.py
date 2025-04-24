@@ -154,6 +154,7 @@ class DiffusionModel:
         n_epochs: int = 10,
         optimizer: Optional[Optimizer] = None,
         lr: float = 1e-3,
+        model_file_name: Optional[str] = None,
         checkpoint_dir: Optional[str] = "../checkpoints",
         checkpoint_interval: int = 5,
         callback: Optional[Callable] = None,
@@ -167,6 +168,7 @@ class DiffusionModel:
             n_epochs: Número de epochs para entrenar
             optimizer: Optimizador a utilizar (si es None, se crea un Adam)
             lr: Learning rate (si se crea un optimizador nuevo)
+            model_file_name: Nombre del archivo para guardar el modelo
             checkpoint_dir: Directorio para guardar checkpoints
             checkpoint_interval: Guardar checkpoint cada N epochs
             callback: Función callback opcional que se llama al final de cada epoch
@@ -197,6 +199,15 @@ class DiffusionModel:
         # Crear directorio de checkpoints si no existe
         if checkpoint_dir and not os.path.exists(checkpoint_dir):
             os.makedirs(checkpoint_dir)
+
+        if model_file_name is None:
+            # Componemos el nombre del archivo del modelo con
+            # el nombre de la sde y si es condicional
+            model_file_name = "Diffusion_model"
+            model_file_name += (
+                f"_{self.sde.__class__.__name__}"
+                + f"_is_conditional_{self.is_conditional}"
+            )
 
         # Cargar checkpoint si se especifica
         start_epoch = 0
@@ -295,7 +306,7 @@ class DiffusionModel:
             # Guardar checkpoint si corresponde
             if checkpoint_dir and (epoch + 1) % checkpoint_interval == 0:
                 checkpoint_path = os.path.join(
-                    checkpoint_dir, f"checkpoint_epoch_{epoch+1}.pt"
+                    checkpoint_dir, f"{model_file_name}_checkpoint_epoch_{epoch+1}.pt"
                 )
                 torch.save(
                     {
@@ -317,7 +328,7 @@ class DiffusionModel:
 
         # Guardar modelo final
         if checkpoint_dir:
-            final_model_path = os.path.join(checkpoint_dir, "model_final.pt")
+            final_model_path = os.path.join(checkpoint_dir, f"{model_file_name}.pt")
             torch.save(
                 {
                     "model_state_dict": self.score_model.state_dict(),
@@ -328,7 +339,7 @@ class DiffusionModel:
                 final_model_path,
             )
             self.logger.info(f"Modelo final guardado en {final_model_path}")
-        
+
         return history
 
     def load_score_model(self, path: str) -> None:

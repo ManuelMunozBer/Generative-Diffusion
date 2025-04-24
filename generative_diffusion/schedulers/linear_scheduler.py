@@ -8,31 +8,21 @@ from .base_scheduler import BaseScheduler
 
 
 class LinearScheduler(BaseScheduler):
-    """
-    Scheduler lineal: β(t) = β_min + (β_max − β_min) · t.
-    """
-
     def __init__(
         self,
-        *,
-        beta_min: float = 1e-4,
-        beta_max: float = 2e-2,
+        beta_start: float = 0.1,
+        beta_end: float = 20,
         T: int = 1000,
-    ) -> None:
-        if not (0.0 < beta_min < beta_max < 1.0):
-            raise ValueError("Se requiere 0 < beta_min < beta_max < 1.")
-        self.beta_min = float(beta_min)
-        self.beta_max = float(beta_max)
+    ):
         super().__init__(T=T)
+        self.beta_start = beta_start
+        self.beta_end = beta_end
 
-    # ------------------------------------------------------------------ #
-    # Implementación de la interfaz                                      #
-    # ------------------------------------------------------------------ #
     def beta(self, t: Tensor) -> Tensor:
-        return self.beta_min + (self.beta_max - self.beta_min) * t
+        beta_t = self.beta_start + (self.beta_end - self.beta_start) * t
+        return beta_t
 
     def alpha_bar(self, t: Tensor) -> Tensor:
-        integrated_beta = (
-            self.beta_min * t + 0.5 * (self.beta_max - self.beta_min) * t**2
-        )
-        return torch.exp(-integrated_beta)
+        beta0, beta1 = self.beta_start, self.beta_end
+        alpha_bar = torch.exp(-0.5 * (beta1 - beta0) * t**2 - beta0 * t)
+        return torch.clamp(alpha_bar, 0.0, 1.0)

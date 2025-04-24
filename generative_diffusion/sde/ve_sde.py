@@ -38,5 +38,5 @@ class VESDE(BaseSDE):
     # Backward                                                           #
     # ------------------------------------------------------------------ #
     def backward_drift(self, x_t: Tensor, t: Tensor, score_fn) -> Tensor:
-        g_t = self.diffusion(t).view(-1, *([1] * (x_t.ndim - 1)))
+        g_t = self._broadcast(self.diffusion(t), x_t)
         return -(g_t**2) * score_fn(x_t, t)

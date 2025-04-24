@@ -12,6 +12,10 @@ class BaseSDE(ABC):
     Interfaz base para las EDE/SDE empleadas en modelos de difusión.
     """
 
+    def _broadcast(self, tensor: Tensor, ref_tensor: Tensor) -> Tensor:
+        """Redimensiona el tensor para hacer broadcasting con ref_tensor."""
+        return tensor.view(-1, *([1] * (ref_tensor.ndim - 1)))
+
     # ------------------------------------------------------------------ #
     # Parámetros infinitesimales                                         #
     # ------------------------------------------------------------------ #

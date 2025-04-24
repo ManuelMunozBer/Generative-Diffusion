@@ -1,42 +1,46 @@
+# NO FUNCIONA
+
 # schedulers/cosine_scheduler.py
 from __future__ import annotations
-
-import math
-
 import torch
 from torch import Tensor
-
 from .base_scheduler import BaseScheduler
 
 
 class CosineScheduler(BaseScheduler):
     """
-    Scheduler coseno de Nichol & Dhariwal (2021):
+    Scheduler de ruido con "cosine schedule" ajustado para `t` normalizado en [0, 1].
+    Hiperparámetros alineados con el paper original (Nichol & Dhariwal, 2021):
 
-    ᾱ(t) = cos²[ (π/2)·(t + s)/(1 + s) ]   ― con s ≈ 0.008.
+      ᾱ(t) = cos²( π/2 · (t/T + s)/(1 + s) ) / cos²( π/2 · s/(1 + s) )
+      β(t) = (π / (1 + s)) · tan( π/2 · (t/T + s)/(1 + s) )
+
+    Se añade clamp para evitar inestabilidades numéricas cerca de t = T.
     """
 
-    def __init__(self, *, s: float = 0.008, T: int = 1000) -> None:
-        if s < 0.0:
-            raise ValueError("`s` debe ser no negativo.")
-        self.s = float(s)
+    def __init__(self, *, T: int = 1000, s: float = 0.008) -> None:
         super().__init__(T=T)
+        self.s = float(s)
+        self._denom_tensor = None
 
-    # ------------------------------------------------------------------ #
-    # Implementación de la interfaz                                      #
-    # ------------------------------------------------------------------ #
     def alpha_bar(self, t: Tensor) -> Tensor:
-        arg = (math.pi / 2.0) * ((t + self.s) / (1.0 + self.s))
-        return torch.cos(arg) ** 2
+        pi = torch.tensor(torch.pi, device=t.device, dtype=t.dtype)
+        scaled_t = (t + self.s) / (1 + self.s)
+        u = (pi / 2) * scaled_t
+        alpha = torch.cos(u) ** 2
+
+        # Cálculo del denominador (solo una vez)
+        if self._denom_tensor is None or self._denom_tensor.device != t.device:
+            u0 = (pi / 2) * (self.s / (1 + self.s))
+            denom_tensor = torch.cos(u0) ** 2
+            self._denom_tensor = denom_tensor.to(device=t.device, dtype=t.dtype)
+
+        return alpha / self._denom_tensor
 
     def beta(self, t: Tensor) -> Tensor:
-        """
-        β(t) = -d/dt ln ᾱ(t) = (π / (1 + s)) · tan(arg)
-        (con t normalizado en [0,1]).
-        """
-        arg = (math.pi / 2.0) * ((t + self.s) / (1.0 + self.s))
-        beta_cont = (math.pi / (1.0 + self.s)) * torch.tan(arg)
+        pi = torch.tensor(torch.pi, device=t.device, dtype=t.dtype)
+        scaled_t = torch.clamp(((t + self.s) / (1 + self.s)), 0, 0.999)
+        u = (pi / 2) * scaled_t
 
-        # Limitar para estabilidad numérica
-        limit = torch.tensor(0.999, device=t.device, dtype=t.dtype)
-        return torch.minimum(beta_cont, limit)
+        coef = pi / (1 + self.s)
+        return (coef / self.T) * torch.tan(u)

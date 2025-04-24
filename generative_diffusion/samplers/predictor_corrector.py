@@ -12,17 +12,17 @@ from generative_diffusion.controllable import BaseController
 
 class PredictorCorrectorSampler(BaseSampler):
     """
-    *Predictor–Corrector* de Song et al. (2021):
+    *Predictor–Corrector* de Song et al. (2021) corregido:
 
-    1. Predictor → Euler‑Maruyama.
-    2. ``corrector_steps`` pasos de Langevin dynamics.
+    1. Predictor → Euler-Maruyama con término de ruido ajustado.
+    2. ``corrector_steps`` pasos de Langevin dynamics con escalado SNR correcto.
     """
 
     def __init__(
         self, *, corrector_steps: int = 10, corrector_snr: float = 0.1
     ) -> None:
         if corrector_steps <= 0:
-            raise ValueError("`corrector_steps` debe ser > 0.")
+            raise ValueError("`corrector_steps` debe ser > 0.")
         self.corrector_steps = int(corrector_steps)
         self.corrector_snr = float(corrector_snr)
 
@@ -57,21 +57,26 @@ class PredictorCorrectorSampler(BaseSampler):
         for i, t in enumerate(times[:-1]):
             t_batch = torch.full((x_0.shape[0],), t, device=device, dtype=x_0.dtype)
 
-            # ---------- predictor (Euler‑Maruyama) ----------
+            # ---------- predictor (Euler-Maruyama corregido) ----------
             drift = sde.backward_drift(traj[i], t_batch, score_fn)
             diffusion = sde.diffusion(t_batch).view(-1, *([1] * (traj[i].ndim - 1)))
-            x = (
-                traj[i]
-                + drift * dt
-                + diffusion * torch.sqrt(dt.abs()) * torch.randn_like(traj[i])
-            )
 
-            # ---------- corrector (Langevin) ----------
+            noise = torch.randn_like(traj[i])
+            x = traj[i] + drift * dt + diffusion * torch.sqrt(-dt) * noise
+
+            # ---------- corrector (Langevin ajustado) ----------
             for _ in range(self.corrector_steps):
                 score = score_fn(x, t_batch)
                 noise = torch.randn_like(x)
-                step = (2.0 * self.corrector_snr) ** 2
-                x = x + step * score + torch.sqrt(step * 2.0) * noise
+
+                # Calcular sigma(t) usando el método correcto de la SDE
+                sigma_t = sde.sigma_t(t_batch).view(-1, *([1] * (x.ndim - 1)))
+
+                # Calcular epsilon basado en SNR y sigma(t)
+                epsilon = (self.corrector_snr * sigma_t) ** 2
+
+                # Paso de Langevin teóricamente correcto
+                x = x + epsilon * score + torch.sqrt(2 * epsilon) * noise
 
             if controller is not None:
                 x = controller.process_step(x_t=x, t=t_batch)

@@ -1,3 +1,5 @@
+# NO FUNCIONA
+
 # samplers/exponential_integrator.py
 from __future__ import annotations
 
@@ -12,7 +14,7 @@ from generative_diffusion.controllable import BaseController
 
 class ExponentialIntegratorSampler(BaseSampler):
     """
-    Integrador exponencial (Zhang & Chen, 2023) para SDEs con parte lineal analítica.
+    Integrador exponencial (Zhang & Chen, 2023) para SDEs con parte lineal analítica.
     """
 
     def sample(
@@ -41,26 +43,39 @@ class ExponentialIntegratorSampler(BaseSampler):
 
         for i in range(n_steps):
             t_curr, t_next = times[i], times[i + 1]
-            t_c = torch.full((x_0.shape[0],), t_curr, device=device, dtype=x_0.dtype)
-            t_n = torch.full((x_0.shape[0],), t_next, device=device, dtype=x_0.dtype)
+            # Normalizar tiempos si la SDE lo requiere (ej: t ∈ [0, 1])
+            t_c_normalized = t_curr / sde.T if hasattr(sde, "T") else t_curr
+            t_n_normalized = t_next / sde.T if hasattr(sde, "T") else t_next
 
-            A = getattr(sde, "exp_matrix", lambda tc, tn: torch.ones_like(tc))(t_c, t_n)
-            b = getattr(
-                sde,
-                "exp_term",
-                lambda tc, tn, sm, x: torch.zeros_like(x),
-            )(t_c, t_n, score_fn, traj[i])
-
-            cov = getattr(sde, "exp_noise_cov", lambda tc, tn: torch.zeros_like(tc))(
-                t_c, t_n
+            t_c = torch.full(
+                (x_0.shape[0],), t_c_normalized, device=device, dtype=x_0.dtype
             )
-            cov = cov.view(-1, *([1] * (traj[i].ndim - 1)))
+            t_n = torch.full(
+                (x_0.shape[0],), t_n_normalized, device=device, dtype=x_0.dtype
+            )
+
+            # Verificar existencia de métodos en la SDE
+            if not hasattr(sde, "exp_matrix"):
+                raise AttributeError("La SDE debe implementar 'exp_matrix'.")
+            if not hasattr(sde, "exp_term"):
+                raise AttributeError("La SDE debe implementar 'exp_term'.")
+            if not hasattr(sde, "exp_noise_cov"):
+                raise AttributeError("La SDE debe implementar 'exp_noise_cov'.")
+
+            A = sde.exp_matrix(t_c, t_n)  # Factor de decaimiento exponencial
+            b = sde.exp_term(
+                t_c, t_n, score_fn, traj[i]
+            )  # Término no lineal (score-driven)
+            cov = sde.exp_noise_cov(t_c, t_n)  # Covarianza del ruido
+
+            # Asegurar que la covarianza no sea negativa
+            cov = cov.clamp(min=0.0).view(-1, *([1] * (traj[i].ndim - 1)))
 
             noise = torch.randn_like(traj[i])
             x = (
                 A.view(-1, *([1] * (traj[i].ndim - 1))) * traj[i]
                 + b
-                + torch.sqrt(cov.abs()) * noise
+                + torch.sqrt(cov) * noise  # Eliminar .abs() gracias al clamp
             )
 
             if controller is not None:
