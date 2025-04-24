@@ -19,11 +19,6 @@ class BaseScheduler(ABC):
 
     _EPS: Final[float] = 1e-8  # para evitar divisiones por cero
 
-    def __init__(self, *, T: int = 1000) -> None:
-        if T <= 0:
-            raise ValueError("T debe ser un entero positivo.")
-        self.T = int(T)
-
     # ------------------------------------------------------------------ #
     # Métodos que toda subclase debe implementar                          #
     # ------------------------------------------------------------------ #

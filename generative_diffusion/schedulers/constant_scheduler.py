@@ -14,11 +14,10 @@ class ConstantScheduler(BaseScheduler):
     β(t) = β₀  ⇒  ᾱ(t) = (1 − β₀)ᵗ   (t ∈ [0, 1])
     """
 
-    def __init__(self, *, beta: float = 0.1, T: int = 1000) -> None:
+    def __init__(self, *, beta: float = 0.1) -> None:
         if not (0.0 < beta < 1.0):
             raise ValueError("`beta` debe pertenecer al intervalo (0, 1).")
         self.beta_value = float(beta)
-        super().__init__(T=T)
 
     # ------------------------------------------------------------------ #
     # Implementación de la interfaz                                      #

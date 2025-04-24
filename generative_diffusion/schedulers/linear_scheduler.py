@@ -8,13 +8,7 @@ from .base_scheduler import BaseScheduler
 
 
 class LinearScheduler(BaseScheduler):
-    def __init__(
-        self,
-        beta_start: float = 0.1,
-        beta_end: float = 20,
-        T: int = 1000,
-    ):
-        super().__init__(T=T)
+    def __init__(self, beta_start: float = 0.1, beta_end: float = 20):
         self.beta_start = beta_start
         self.beta_end = beta_end
 
