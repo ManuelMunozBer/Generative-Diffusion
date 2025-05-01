@@ -228,27 +228,38 @@ de difusión y generar imágenes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parámetros<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x_0</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</span>) – Tensor inicial para la generación
-(normalmente x_T ~ N(0,I)) [B, C, H, W]</p></li>
-<li><p><strong>n_samples</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Número de muestras a generar</p></li>
-<li><p><strong>condition</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</span>) – Condición opcional para generación condicional (ej. etiquetas)</p></li>
-<li><p><strong>t_0</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Tiempo inicial para el proceso de muestreo</p></li>
-<li><p><strong>t_end</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Tiempo final para el proceso de muestreo</p></li>
-<li><p><strong>n_steps</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Número de pasos para el muestreo</p></li>
-<li><p><strong>seed</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span>) – Semilla para reproducibilidad</p></li>
-<li><p><strong>save_path</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – Ruta para guardar las imágenes generadas</p></li>
-<li><p><strong>return_sequence</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – Si es True, devuelve toda la secuencia de muestras</p></li>
-<li><p><strong>model_path</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – Ruta opcional al modelo pre-entrenado a cargar</p></li>
-<li><p><strong>data_shape</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]]</span>) – Forma de los datos si no se ha especificado antes</p></li>
-<li><p><strong>controller</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="#generative_diffusion.controllable.base_controller.BaseController" title="generative_diffusion.controllable.base_controller.BaseController"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseController</span></code></a>]</span>) – Controlador opcional para generación controlada (ej. imputación)</p></li>
+<li><p><strong>x_0</strong> (<em>torch.Tensor</em>) – Tensor inicial para la generación [B, C, H, W].</p></li>
+<li><p><strong>n_samples</strong> (<em>int</em>) – Número de muestras a generar.</p></li>
+<li><p><strong>condition</strong> (<em>Any</em><em>, </em><em>optional</em>) – Condición opcional (por ejemplo, etiquetas).</p></li>
+<li><p><strong>t_0</strong> (<em>float</em>) – Tiempo inicial del proceso de muestreo.</p></li>
+<li><p><strong>t_end</strong> (<em>float</em>) – Tiempo final del proceso de muestreo.</p></li>
+<li><p><strong>n_steps</strong> (<em>int</em>) – Número de pasos de muestreo.</p></li>
+<li><p><strong>seed</strong> (<em>int</em><em>, </em><em>optional</em>) – Semilla para reproducibilidad.</p></li>
+<li><p><strong>save_path</strong> (<em>str</em><em>, </em><em>optional</em>) – Ruta para guardar las imágenes generadas.</p></li>
+<li><p><strong>return_sequence</strong> (<em>bool</em>) – Si es True, devuelve toda la secuencia.</p></li>
+<li><p><strong>model_path</strong> (<em>str</em><em>, </em><em>optional</em>) – Ruta al modelo preentrenado.</p></li>
+<li><p><strong>data_shape</strong> (<em>tuple</em><em>, </em><em>optional</em>) – Forma de los datos.</p></li>
+<li><p><strong>controller</strong> (<em>Any</em><em>, </em><em>optional</em>) – Controlador para generación controlada.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Tipo del valor devuelto<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]]</span></p>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Si return_sequence es False, devuelve (muestras, condiciones)</dt><dd><ul class="simple">
+<li><p>muestras (torch.Tensor): Tensor de imágenes generadas [B, C, H, W].</p></li>
+<li><p>condiciones (torch.Tensor or None): Tensor con condiciones [B] o None.</p></li>
+</ul>
 </dd>
-<dt class="field-odd">Devuelve<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Tensor con las muestras generadas, o tuple (tiempos, muestras)
-si return_sequence=True</p>
+<dt>tuple: Si return_sequence es True, devuelve (tiempos, muestras, condiciones)</dt><dd><ul class="simple">
+<li><p>tiempos (torch.Tensor): Tiempos de muestreo [n_steps].</p></li>
+<li><p>muestras (torch.Tensor): Secuencia de imágenes [n_steps, B, C, H, W].</p></li>
+<li><p>condiciones (torch.Tensor or None): Tensor con condiciones [B] o None.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
 </dd>
 </dl>
 </dd></dl>
@@ -260,25 +271,37 @@ si return_sequence=True</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parámetros<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>image</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span>) – Imagen(es) a imputar [B, C, H, W]</p></li>
-<li><p><strong>mask</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span>) – Máscara binaria donde 1 indica
-píxeles conocidos [B, 1, H, W] o [B, C, H, W]</p></li>
-<li><p><strong>condition</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</span>) – Condición opcional para generación condicional (ej. etiquetas)</p></li>
-<li><p><strong>t_0</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Tiempo inicial para el proceso de imputación</p></li>
-<li><p><strong>t_end</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Tiempo final para el proceso de imputación</p></li>
-<li><p><strong>n_steps</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Número de pasos para la imputación</p></li>
-<li><p><strong>seed</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span>) – Semilla para reproducibilidad</p></li>
-<li><p><strong>save_path</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – Ruta para guardar las imágenes generadas</p></li>
-<li><p><strong>return_sequence</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – Si es True, devuelve toda la secuencia de imputación</p></li>
-<li><p><strong>model_path</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – Ruta opcional al modelo pre-entrenado a cargar</p></li>
+<li><p><strong>image</strong> (<em>torch.Tensor</em>) – Imagen o imágenes a imputar [B, C, H, W].</p></li>
+<li><p><strong>mask</strong> (<em>torch.Tensor</em>) – Máscara binaria con píxeles conocidos.
+Puede tener forma [B, 1, H, W] o [B, C, H, W].</p></li>
+<li><p><strong>condition</strong> (<em>Any</em><em>, </em><em>optional</em>) – Condición opcional (por ejemplo, etiquetas).</p></li>
+<li><p><strong>t_0</strong> (<em>float</em>) – Tiempo inicial del proceso de imputación.</p></li>
+<li><p><strong>t_end</strong> (<em>float</em>) – Tiempo final del proceso de imputación.</p></li>
+<li><p><strong>n_steps</strong> (<em>int</em>) – Número de pasos para imputar.</p></li>
+<li><p><strong>seed</strong> (<em>int</em><em>, </em><em>optional</em>) – Semilla para reproducibilidad.</p></li>
+<li><p><strong>save_path</strong> (<em>str</em><em>, </em><em>optional</em>) – Ruta para guardar imágenes generadas.</p></li>
+<li><p><strong>return_sequence</strong> (<em>bool</em>) – Si es True, devuelve toda la secuencia.</p></li>
+<li><p><strong>model_path</strong> (<em>str</em><em>, </em><em>optional</em>) – Ruta al modelo preentrenado.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Tipo del valor devuelto<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]]</span></p>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Si return_sequence es False, devuelve (imputaciones, condiciones)</dt><dd><ul class="simple">
+<li><p>imputaciones (torch.Tensor): Tensor de imágenes imputadas [B, C, H, W]</p></li>
+<li><p>condiciones (torch.Tensor or None): Condiciones usadas [B] o None.</p></li>
+</ul>
 </dd>
-<dt class="field-odd">Devuelve<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Tensor con la(s) imagen(es) imputada(s), o tupla (tiempos, imágenes)
-si return_sequence=True</p>
+<dt>tuple: Si return_sequence es True, devuelve ((tiempos, imputaciones), condiciones)</dt><dd><ul class="simple">
+<li><p>tiempos (torch.Tensor): Tiempos del proceso [n_steps].</p></li>
+<li><p>imputaciones (torch.Tensor): Secuencia imputada [n_steps, B, C, H, W].</p></li>
+<li><p>condiciones (torch.Tensor or None): Condiciones usadas [B] o None.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
 </dd>
 </dl>
 </dd></dl>

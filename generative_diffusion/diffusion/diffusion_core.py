@@ -407,28 +407,37 @@ class DiffusionModel:
         model_path: Optional[str] = None,
         data_shape: Optional[Tuple[int, ...]] = None,
         controller: Optional[BaseController] = None,
-    ) -> Union[torch.Tensor, Tuple[torch.Tensor, torch.Tensor]]:
+    ) -> Union[
+        torch.Tensor,
+        Tuple[torch.Tensor, torch.Tensor],
+        Tuple[torch.Tensor, Tuple[torch.Tensor, torch.Tensor]],
+    ]:
         """
         Genera muestras utilizando el modelo de difusión entrenado.
 
         Args:
-            x_0: Tensor inicial para la generación
-                 (normalmente x_T ~ N(0,I)) [B, C, H, W]
-            n_samples: Número de muestras a generar
-            condition: Condición opcional para generación condicional (ej. etiquetas)
-            t_0: Tiempo inicial para el proceso de muestreo
-            t_end: Tiempo final para el proceso de muestreo
-            n_steps: Número de pasos para el muestreo
-            seed: Semilla para reproducibilidad
-            save_path: Ruta para guardar las imágenes generadas
-            return_sequence: Si es True, devuelve toda la secuencia de muestras
-            model_path: Ruta opcional al modelo pre-entrenado a cargar
-            data_shape: Forma de los datos si no se ha especificado antes
-            controller: Controlador opcional para generación controlada (ej. imputación)
+            x_0 (torch.Tensor): Tensor inicial para la generación [B, C, H, W].
+            n_samples (int): Número de muestras a generar.
+            condition (Any, optional): Condición opcional (por ejemplo, etiquetas).
+            t_0 (float): Tiempo inicial del proceso de muestreo.
+            t_end (float): Tiempo final del proceso de muestreo.
+            n_steps (int): Número de pasos de muestreo.
+            seed (int, optional): Semilla para reproducibilidad.
+            save_path (str, optional): Ruta para guardar las imágenes generadas.
+            return_sequence (bool): Si es True, devuelve toda la secuencia.
+            model_path (str, optional): Ruta al modelo preentrenado.
+            data_shape (tuple, optional): Forma de los datos.
+            controller (Any, optional): Controlador para generación controlada.
 
         Returns:
-            Tensor con las muestras generadas, o tuple (tiempos, muestras)
-            si return_sequence=True
+            tuple: Si return_sequence es False, devuelve (muestras, condiciones)
+                - muestras (torch.Tensor): Tensor de imágenes generadas [B, C, H, W].
+                - condiciones (torch.Tensor or None): Tensor con condiciones [B] o None.
+
+            tuple: Si return_sequence es True, devuelve (tiempos, muestras, condiciones)
+                - tiempos (torch.Tensor): Tiempos de muestreo [n_steps].
+                - muestras (torch.Tensor): Secuencia de imágenes [n_steps, B, C, H, W].
+                - condiciones (torch.Tensor or None): Tensor con condiciones [B] o None.
         """
         # Cargar modelo pre-entrenado si se especifica
         if model_path is not None:
@@ -476,9 +485,14 @@ class DiffusionModel:
 
         # Si el modelo es condicional pero no se proporcionó condición, verificar
         if self.is_conditional and condition is None:
+            # Generamos nosotros internamente un tensor de condición aleatorio
+            condition = torch.randint(
+                0, self.model_kwargs["num_classes"], (n_samples,), device=self.device
+            )
+            # Avismos de que como no se ha proporcionado la condición,
+            # se usará una aleatoria
             self.logger.warning(
-                "El modelo es condicional pero no se proporcionó una condición. "
-                "Esto podría llevar a resultados subóptimos."
+                "No se proporcionó condición, se usará un tensor aleatorio de condición"
             )
 
         # Fijar semilla si se proporciona
@@ -528,7 +542,11 @@ class DiffusionModel:
                 self.logger, samples[-1] if return_sequence else samples, save_path
             )
 
-        return (times, samples) if return_sequence else samples[-1]
+        # Devolver el resultado y las condiciones utilizadas
+        if return_sequence:
+            return (times, samples), condition
+        else:
+            return samples[-1], condition
 
     def impute(
         self,
@@ -542,26 +560,35 @@ class DiffusionModel:
         save_path: Optional[str] = None,
         return_sequence: bool = False,
         model_path: Optional[str] = None,
-    ) -> Union[torch.Tensor, Tuple[torch.Tensor, torch.Tensor]]:
+    ) -> Union[
+        Tuple[torch.Tensor, Optional[torch.Tensor]],
+        Tuple[Tuple[torch.Tensor, torch.Tensor], Optional[torch.Tensor]],
+    ]:
         """
         Realiza imputación en una imagen utilizando el modelo de difusión.
 
         Args:
-            image: Imagen(es) a imputar [B, C, H, W]
-            mask: Máscara binaria donde 1 indica
-                  píxeles conocidos [B, 1, H, W] o [B, C, H, W]
-            condition: Condición opcional para generación condicional (ej. etiquetas)
-            t_0: Tiempo inicial para el proceso de imputación
-            t_end: Tiempo final para el proceso de imputación
-            n_steps: Número de pasos para la imputación
-            seed: Semilla para reproducibilidad
-            save_path: Ruta para guardar las imágenes generadas
-            return_sequence: Si es True, devuelve toda la secuencia de imputación
-            model_path: Ruta opcional al modelo pre-entrenado a cargar
+            image (torch.Tensor): Imagen o imágenes a imputar [B, C, H, W].
+            mask (torch.Tensor): Máscara binaria con píxeles conocidos.
+                Puede tener forma [B, 1, H, W] o [B, C, H, W].
+            condition (Any, optional): Condición opcional (por ejemplo, etiquetas).
+            t_0 (float): Tiempo inicial del proceso de imputación.
+            t_end (float): Tiempo final del proceso de imputación.
+            n_steps (int): Número de pasos para imputar.
+            seed (int, optional): Semilla para reproducibilidad.
+            save_path (str, optional): Ruta para guardar imágenes generadas.
+            return_sequence (bool): Si es True, devuelve toda la secuencia.
+            model_path (str, optional): Ruta al modelo preentrenado.
 
         Returns:
-            Tensor con la(s) imagen(es) imputada(s), o tupla (tiempos, imágenes)
-            si return_sequence=True
+            tuple: Si return_sequence es False, devuelve (imputaciones, condiciones)
+                - imputaciones (torch.Tensor): Tensor de imágenes imputadas [B, C, H, W]
+                - condiciones (torch.Tensor or None): Condiciones usadas [B] o None.
+
+            tuple: Si return_sequence es True, devuelve ((tiempos, imputaciones), condiciones)
+                - tiempos (torch.Tensor): Tiempos del proceso [n_steps].
+                - imputaciones (torch.Tensor): Secuencia imputada [n_steps, B, C, H, W].
+                - condiciones (torch.Tensor or None): Condiciones usadas [B] o None.
         """
         # Cargar modelo pre-entrenado si se especifica
         if model_path is not None:
@@ -655,7 +682,7 @@ class DiffusionModel:
         else:
             # Si no se proporcionan muestras generadas, generarlas
             self.logger.info("Generando nuevas muestras para evaluación")
-            generated_samples = self.generate(
+            generated_samples, _ = self.generate(
                 n_samples=n_generated_samples,
                 condition=condition,
                 n_steps=n_steps,

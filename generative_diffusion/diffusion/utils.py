@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+import colorlog
 from pathlib import Path
 from typing import Union
 
@@ -14,17 +15,33 @@ from torchvision.utils import save_image
 # Logger                                                                #
 # --------------------------------------------------------------------- #
 def setup_default_logger(name: str) -> logging.Logger:
-    """Devuelve un logger INFO‐level sin duplicar handlers."""
+    """Devuelve un logger INFO-level con colores según el nivel del log."""
     logger = logging.getLogger(name)
     logger.setLevel(logging.INFO)
     logger.propagate = False
 
+    # Verificar si ya tiene un StreamHandler para evitar duplicados
     if not any(isinstance(h, logging.StreamHandler) for h in logger.handlers):
-        handler = logging.StreamHandler()
-        handler.setFormatter(
-            logging.Formatter("%(asctime)s — %(name)s — %(levelname)s — %(message)s")
+        # Crear el handler
+        handler = colorlog.StreamHandler()
+
+        # Crear el formateador con colores
+        formatter = colorlog.ColoredFormatter(
+            fmt="%(log_color)s%(asctime)s — %(name)s — %(levelname)s — %(message)s",
+            log_colors={
+                "DEBUG": "cyan",
+                "INFO": "green",
+                "WARNING": "yellow",
+                "ERROR": "red",
+                "CRITICAL": "red,bg_white",
+            },
+            secondary_log_colors={},
+            style="%",
         )
+
+        handler.setFormatter(formatter)
         logger.addHandler(handler)
+
     return logger
 
 

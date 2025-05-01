@@ -24,18 +24,29 @@ pip install -e .[dev]
 ## Ejemplo mínimo
 
 ```python
-from generative_diffusion import ModelFactory
-from generative_diffusion.score_networks.unet_score_network import UNetScore
+from generative_diffusion.utils import *
+from generative_diffusion.diffusion import ModelFactory
+from generative_diffusion.score_networks import ScoreNet
 
-model = ModelFactory.create(
-    score_model_class = UNetScore,
-    is_conditional    = False,
-    sde_name          = "ve_sde",
-    sampler_name      = "euler_maruyama",
+# Crear modelo de difusión utilizando el ModelFactory
+diffusion_model = ModelFactory.create(
+    score_model_class=ScoreNet,
+    is_conditional=True,
+    sde_name='ve_sde',
+    sampler_name='euler_maruyama',
+    # scheduler_name='linear',
 )
 
-samples = model.generate(n_samples=4, n_steps=200)
-print(samples.shape)   # (4, 3, H, W)
+# Cargar un modelo pre-entrenado
+diffusion_model.load_score_model("../checkpoints/Diffusion_model_VESDE_is_conditional_True.pt")
+
+# Generar imágenes
+generated_images, labels = diffusion_model.generate(
+    n_samples=8,
+    n_steps=500,
+)
+# Mostrar imágenes generadas
+show_images(generated_images, title="Dígitos generados con difusión", labels=labels)
 ```
 
 ## Estructura de carpetas

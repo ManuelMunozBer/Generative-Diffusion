@@ -38,8 +38,7 @@ class CosineScheduler(BaseScheduler):
         scaled_t = (t + self.s) / (1 + self.s)
         f_t = torch.cos((pi / 2) * scaled_t) ** 2
 
-        # Cálculo del denominador f(0) (solo una vez por dispositivo/dtype)
-        # Se usa un tensor persistente para evitar recalcularlo
+        # Cálculo del denominador f(0) (solo una vez)
         if (
             self._denom_tensor is None
             or self._denom_tensor.device != t.device
@@ -48,13 +47,8 @@ class CosineScheduler(BaseScheduler):
             f_0 = torch.cos((pi / 2) * (self.s / (1 + self.s))) ** 2
             self._denom_tensor = f_0.to(device=t.device, dtype=t.dtype)
 
-        # Evitar división por cero si f(0) es muy pequeño
-        # (aunque con s=0.008 no debería pasar)
-        alpha = f_t / torch.max(
-            self._denom_tensor, torch.tensor(self._EPS, device=t.device, dtype=t.dtype)
-        )
-        # Clamp final para asegurar que esté en [0, 1]
-        # debido a posibles errores numéricos
+        alpha = f_t / self._denom_tensor
+        # Clamp final para asegurar que esté en [0, 1] (posibles errores numéricos)
         return torch.clamp(alpha, 0.0, 1.0)
 
     def beta(self, t: Tensor) -> Tensor:
@@ -66,13 +60,7 @@ class CosineScheduler(BaseScheduler):
         # Clamp a un valor ligeramente menor que 1.0
         scaled_t = torch.clamp((t + self.s) / (1 + self.s), min=0.0, max=0.9999)
         u = (pi / 2) * scaled_t
-
-        # beta_norm = (pi / (1 + s)) * tan(u)
         beta_t = coef * torch.tan(u)
 
-        # β(t) debe estar acotado para evitar inestabilidades, siguiendo DDPM/DDIM.
-        # El paper original de cosine schedule deriva beta de alpha_bar discretizado:
-        # beta_t = 1 - alpha_bar_t / alpha_bar_{t-1}, acotado a <= 0.999
-        # Aquí usamos la fórmula continua derivada, pero la acotamos igualmente.
-        # El valor máximo de 0.999 es una heurística común.
-        return torch.clamp(beta_t, min=self._EPS, max=0.999)  # Acotar beta
+        # β(t) debe estar acotado para evitar inestabilidades
+        return torch.clamp(beta_t, min=self._EPS, max=0.999)
