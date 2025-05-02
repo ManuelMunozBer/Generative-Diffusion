@@ -23,6 +23,10 @@ class VPSDE(SchedulerBasedSDE):
         beta = self._broadcast(self.beta_t(t), x_t)
         return -0.5 * beta * x_t
 
+    def drift_backward(self, x_t: Tensor, t: Tensor) -> Tensor:
+        beta = self._broadcast(self.beta_t(t), x_t)
+        return -0.5 * beta
+
     def diffusion(self, t: Tensor) -> Tensor:
         return torch.sqrt(self.beta_t(t))
 
@@ -39,3 +43,7 @@ class VPSDE(SchedulerBasedSDE):
         beta = self._broadcast(self.beta_t(t), x_t)
         g = self._broadcast(self.diffusion(t), x_t)
         return -0.5 * beta * x_t - (g**2) * score_fn(x_t, t)
+
+    def backward_drift_exponencial(self, x_t: Tensor, t: Tensor, score_fn) -> Tensor:
+        g = self._broadcast(self.diffusion(t), x_t)
+        return -(g**2) * score_fn(x_t, t)

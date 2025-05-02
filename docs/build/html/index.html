@@ -89,26 +89,32 @@
 </li>
 <li><a class="reference internal" href="#generative_diffusion.sde.ve_sde.VESDE"><code class="docutils literal notranslate"><span class="pre">VESDE</span></code></a><ul>
 <li><a class="reference internal" href="#generative_diffusion.sde.ve_sde.VESDE.backward_drift"><code class="docutils literal notranslate"><span class="pre">VESDE.backward_drift()</span></code></a></li>
+<li><a class="reference internal" href="#generative_diffusion.sde.ve_sde.VESDE.backward_drift_exponencial"><code class="docutils literal notranslate"><span class="pre">VESDE.backward_drift_exponencial()</span></code></a></li>
 <li><a class="reference internal" href="#generative_diffusion.sde.ve_sde.VESDE.diffusion"><code class="docutils literal notranslate"><span class="pre">VESDE.diffusion()</span></code></a></li>
 <li><a class="reference internal" href="#generative_diffusion.sde.ve_sde.VESDE.drift"><code class="docutils literal notranslate"><span class="pre">VESDE.drift()</span></code></a></li>
+<li><a class="reference internal" href="#generative_diffusion.sde.ve_sde.VESDE.drift_backward"><code class="docutils literal notranslate"><span class="pre">VESDE.drift_backward()</span></code></a></li>
 <li><a class="reference internal" href="#generative_diffusion.sde.ve_sde.VESDE.mu_t"><code class="docutils literal notranslate"><span class="pre">VESDE.mu_t()</span></code></a></li>
 <li><a class="reference internal" href="#generative_diffusion.sde.ve_sde.VESDE.sigma_t"><code class="docutils literal notranslate"><span class="pre">VESDE.sigma_t()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#generative_diffusion.sde.vp_sde.VPSDE"><code class="docutils literal notranslate"><span class="pre">VPSDE</span></code></a><ul>
 <li><a class="reference internal" href="#generative_diffusion.sde.vp_sde.VPSDE.backward_drift"><code class="docutils literal notranslate"><span class="pre">VPSDE.backward_drift()</span></code></a></li>
+<li><a class="reference internal" href="#generative_diffusion.sde.vp_sde.VPSDE.backward_drift_exponencial"><code class="docutils literal notranslate"><span class="pre">VPSDE.backward_drift_exponencial()</span></code></a></li>
 <li><a class="reference internal" href="#generative_diffusion.sde.vp_sde.VPSDE.beta_t"><code class="docutils literal notranslate"><span class="pre">VPSDE.beta_t()</span></code></a></li>
 <li><a class="reference internal" href="#generative_diffusion.sde.vp_sde.VPSDE.diffusion"><code class="docutils literal notranslate"><span class="pre">VPSDE.diffusion()</span></code></a></li>
 <li><a class="reference internal" href="#generative_diffusion.sde.vp_sde.VPSDE.drift"><code class="docutils literal notranslate"><span class="pre">VPSDE.drift()</span></code></a></li>
+<li><a class="reference internal" href="#generative_diffusion.sde.vp_sde.VPSDE.drift_backward"><code class="docutils literal notranslate"><span class="pre">VPSDE.drift_backward()</span></code></a></li>
 <li><a class="reference internal" href="#generative_diffusion.sde.vp_sde.VPSDE.mu_t"><code class="docutils literal notranslate"><span class="pre">VPSDE.mu_t()</span></code></a></li>
 <li><a class="reference internal" href="#generative_diffusion.sde.vp_sde.VPSDE.sigma_t"><code class="docutils literal notranslate"><span class="pre">VPSDE.sigma_t()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#generative_diffusion.sde.subvp_sde.SubVPSDE"><code class="docutils literal notranslate"><span class="pre">SubVPSDE</span></code></a><ul>
 <li><a class="reference internal" href="#generative_diffusion.sde.subvp_sde.SubVPSDE.backward_drift"><code class="docutils literal notranslate"><span class="pre">SubVPSDE.backward_drift()</span></code></a></li>
+<li><a class="reference internal" href="#generative_diffusion.sde.subvp_sde.SubVPSDE.backward_drift_exponencial"><code class="docutils literal notranslate"><span class="pre">SubVPSDE.backward_drift_exponencial()</span></code></a></li>
 <li><a class="reference internal" href="#generative_diffusion.sde.subvp_sde.SubVPSDE.beta_t"><code class="docutils literal notranslate"><span class="pre">SubVPSDE.beta_t()</span></code></a></li>
 <li><a class="reference internal" href="#generative_diffusion.sde.subvp_sde.SubVPSDE.diffusion"><code class="docutils literal notranslate"><span class="pre">SubVPSDE.diffusion()</span></code></a></li>
 <li><a class="reference internal" href="#generative_diffusion.sde.subvp_sde.SubVPSDE.drift"><code class="docutils literal notranslate"><span class="pre">SubVPSDE.drift()</span></code></a></li>
+<li><a class="reference internal" href="#generative_diffusion.sde.subvp_sde.SubVPSDE.drift_backward"><code class="docutils literal notranslate"><span class="pre">SubVPSDE.drift_backward()</span></code></a></li>
 <li><a class="reference internal" href="#generative_diffusion.sde.subvp_sde.SubVPSDE.mu_t"><code class="docutils literal notranslate"><span class="pre">SubVPSDE.mu_t()</span></code></a></li>
 <li><a class="reference internal" href="#generative_diffusion.sde.subvp_sde.SubVPSDE.sigma_t"><code class="docutils literal notranslate"><span class="pre">SubVPSDE.sigma_t()</span></code></a></li>
 </ul>
@@ -501,7 +507,7 @@ o <cite>torch.nn.Module</cite>.</p></li>
 
 <dl class="py class" id="module-generative_diffusion.samplers.exponential_integrator">
 <dt class="sig sig-object py" id="generative_diffusion.samplers.exponential_integrator.ExponentialIntegratorSampler">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">generative_diffusion.samplers.exponential_integrator.</span></span><span class="sig-name descname"><span class="pre">ExponentialIntegratorSampler</span></span><a class="headerlink" href="#generative_diffusion.samplers.exponential_integrator.ExponentialIntegratorSampler" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">generative_diffusion.samplers.exponential_integrator.</span></span><span class="sig-name descname"><span class="pre">ExponentialIntegratorSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#generative_diffusion.samplers.exponential_integrator.ExponentialIntegratorSampler" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#generative_diffusion.samplers.base_sampler.BaseSampler" title="generative_diffusion.samplers.base_sampler.BaseSampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSampler</span></code></a></p>
 <p>Integrador exponencial (Zhang &amp; Chen, 2023) para SDEs con parte lineal analítica.</p>
 <dl class="py method">
@@ -607,6 +613,16 @@ o <cite>torch.nn.Module</cite>.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="generative_diffusion.sde.ve_sde.VESDE.backward_drift_exponencial">
+<span class="sig-name descname"><span class="pre">backward_drift_exponencial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score_fn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#generative_diffusion.sde.ve_sde.VESDE.backward_drift_exponencial" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="generative_diffusion.sde.ve_sde.VESDE.diffusion">
 <span class="sig-name descname"><span class="pre">diffusion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#generative_diffusion.sde.ve_sde.VESDE.diffusion" title="Link to this definition"></a></dt>
 <dd><p>g(t)      — coeficiente de ruido multiplicativo.</p>
@@ -622,6 +638,16 @@ o <cite>torch.nn.Module</cite>.</p></li>
 <span class="sig-name descname"><span class="pre">drift</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#generative_diffusion.sde.ve_sde.VESDE.drift" title="Link to this definition"></a></dt>
 <dd><p>f(x, t)   — termino determinista.</p>
 <dl class="field-list simple">
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="generative_diffusion.sde.ve_sde.VESDE.drift_backward">
+<span class="sig-name descname"><span class="pre">drift_backward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#generative_diffusion.sde.ve_sde.VESDE.drift_backward" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
 <dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
 </dd>
@@ -669,6 +695,16 @@ o <cite>torch.nn.Module</cite>.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="generative_diffusion.sde.vp_sde.VPSDE.backward_drift_exponencial">
+<span class="sig-name descname"><span class="pre">backward_drift_exponencial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score_fn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#generative_diffusion.sde.vp_sde.VPSDE.backward_drift_exponencial" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="generative_diffusion.sde.vp_sde.VPSDE.beta_t">
 <span class="sig-name descname"><span class="pre">beta_t</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#generative_diffusion.sde.vp_sde.VPSDE.beta_t" title="Link to this definition"></a></dt>
 <dd><p>β(t) vía scheduler.</p>
@@ -695,6 +731,16 @@ o <cite>torch.nn.Module</cite>.</p></li>
 <span class="sig-name descname"><span class="pre">drift</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#generative_diffusion.sde.vp_sde.VPSDE.drift" title="Link to this definition"></a></dt>
 <dd><p>f(x, t)   — termino determinista.</p>
 <dl class="field-list simple">
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="generative_diffusion.sde.vp_sde.VPSDE.drift_backward">
+<span class="sig-name descname"><span class="pre">drift_backward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#generative_diffusion.sde.vp_sde.VPSDE.drift_backward" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
 <dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
 </dd>
@@ -742,6 +788,16 @@ o <cite>torch.nn.Module</cite>.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="generative_diffusion.sde.subvp_sde.SubVPSDE.backward_drift_exponencial">
+<span class="sig-name descname"><span class="pre">backward_drift_exponencial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score_fn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#generative_diffusion.sde.subvp_sde.SubVPSDE.backward_drift_exponencial" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="generative_diffusion.sde.subvp_sde.SubVPSDE.beta_t">
 <span class="sig-name descname"><span class="pre">beta_t</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#generative_diffusion.sde.subvp_sde.SubVPSDE.beta_t" title="Link to this definition"></a></dt>
 <dd><p>β(t) vía scheduler.</p>
@@ -768,6 +824,16 @@ o <cite>torch.nn.Module</cite>.</p></li>
 <span class="sig-name descname"><span class="pre">drift</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#generative_diffusion.sde.subvp_sde.SubVPSDE.drift" title="Link to this definition"></a></dt>
 <dd><p>f(x, t)   — termino determinista.</p>
 <dl class="field-list simple">
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="generative_diffusion.sde.subvp_sde.SubVPSDE.drift_backward">
+<span class="sig-name descname"><span class="pre">drift_backward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#generative_diffusion.sde.subvp_sde.SubVPSDE.drift_backward" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
 <dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
 </dd>

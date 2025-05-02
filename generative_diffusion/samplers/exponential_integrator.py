@@ -1,8 +1,7 @@
-# NO FUNCIONA
-
 # samplers/exponential_integrator.py
 from __future__ import annotations
 
+import logging
 from typing import Callable, Optional, Tuple
 
 import torch
@@ -17,6 +16,12 @@ class ExponentialIntegratorSampler(BaseSampler):
     Integrador exponencial (Zhang & Chen, 2023) para SDEs con parte lineal analítica.
     """
 
+    def __init__(self, *, logger: Optional[logging.Logger] = None) -> None:
+        self.logger = logger or logging.getLogger(__name__)
+
+    # ------------------------------------------------------------------ #
+    # Main                                                               #
+    # ------------------------------------------------------------------ #
     def sample(
         self,
         x_0: Tensor,
@@ -35,51 +40,54 @@ class ExponentialIntegratorSampler(BaseSampler):
 
         device = x_0.device
         times = torch.linspace(t_0, t_end, n_steps + 1, device=device)
+        dt = times[1] - times[0]
 
         traj = torch.empty(n_steps + 1, *x_0.shape, device=device, dtype=x_0.dtype)
         traj[0] = x_0
 
         score_fn = self._prepare_score_model(score_model, condition)
 
-        for i in range(n_steps):
-            t_curr, t_next = times[i], times[i + 1]
-            # Normalizar tiempos si la SDE lo requiere (ej: t ∈ [0, 1])
-            t_c_normalized = t_curr / sde.T if hasattr(sde, "T") else t_curr
-            t_n_normalized = t_next / sde.T if hasattr(sde, "T") else t_next
+        for i, t in enumerate(times[:-1]):
+            t_batch = torch.full((x_0.shape[0],), t, device=device, dtype=x_0.dtype)
 
-            t_c = torch.full(
-                (x_0.shape[0],), t_c_normalized, device=device, dtype=x_0.dtype
-            )
-            t_n = torch.full(
-                (x_0.shape[0],), t_n_normalized, device=device, dtype=x_0.dtype
-            )
+            x = traj[i]
 
-            # Verificar existencia de métodos en la SDE
-            if not hasattr(sde, "exp_matrix"):
-                raise AttributeError("La SDE debe implementar 'exp_matrix'.")
-            if not hasattr(sde, "exp_term"):
-                raise AttributeError("La SDE debe implementar 'exp_term'.")
-            if not hasattr(sde, "exp_noise_cov"):
-                raise AttributeError("La SDE debe implementar 'exp_noise_cov'.")
-
-            A = sde.exp_matrix(t_c, t_n)  # Factor de decaimiento exponencial
-            b = sde.exp_term(
-                t_c, t_n, score_fn, traj[i]
-            )  # Término no lineal (score-driven)
-            cov = sde.exp_noise_cov(t_c, t_n)  # Covarianza del ruido
-
-            # Asegurar que la covarianza no sea negativa
-            cov = cov.clamp(min=0.0).view(-1, *([1] * (traj[i].ndim - 1)))
-
+            # Drift y diffusions
             noise = torch.randn_like(traj[i])
+            diffusion = sde.diffusion(t_batch).view(-1, *([1] * (x.ndim - 1)))
+            drift_coefficient_exponencial = sde.backward_drift_exponencial(
+                x, t_batch, score_fn
+            )
+            drift = sde.drift_backward(x, t_batch)
+
+            z = drift * dt
+
+            # Usamos Taylor por si |z| es pequeño
+            taylor_approx = 1 + 0.5 * z + (1 / 6) * z**2 + (1 / 24) * z**3
+
+            drift_exp = torch.exp(z)
+            numerador = drift_exp - 1
+
+            threshold = 1e-6
+            use_taylor = z.abs() < threshold
+
+            resultado = torch.where(
+                use_taylor,
+                taylor_approx,
+                numerador
+                / torch.where(
+                    z.abs() < threshold, torch.ones_like(z), z
+                ),  # Para evitar cero en denominador
+            )
+
             x = (
-                A.view(-1, *([1] * (traj[i].ndim - 1))) * traj[i]
-                + b
-                + torch.sqrt(cov) * noise  # Eliminar .abs() gracias al clamp
+                +drift_exp * traj[i]
+                + resultado * dt * drift_coefficient_exponencial
+                + diffusion * torch.sqrt(dt.abs()) * noise
             )
 
             if controller is not None:
-                x = controller.process_step(x_t=x, t=t_n)
+                x = controller.process_step(x_t=x, t=t_batch)
 
             traj[i + 1] = x
 

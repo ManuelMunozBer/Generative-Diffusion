@@ -24,6 +24,9 @@ class VESDE(BaseSDE):
     def drift(self, x_t: Tensor, t: Tensor) -> Tensor:
         return torch.zeros_like(x_t)
 
+    def drift_backward(self, x_t: Tensor, t: Tensor) -> Tensor:
+        return torch.zeros_like(x_t)
+
     def diffusion(self, t: Tensor) -> Tensor:
         return self.sigma**t
 
@@ -40,3 +43,7 @@ class VESDE(BaseSDE):
     def backward_drift(self, x_t: Tensor, t: Tensor, score_fn) -> Tensor:
         g_t = self._broadcast(self.diffusion(t), x_t)
         return -(g_t**2) * score_fn(x_t, t)
+
+    def backward_drift_exponencial(self, x_t: Tensor, t: Tensor, score_fn) -> Tensor:
+        # Como no hay betas, igual que backward_drift
+        return self.backward_drift(x_t, t, score_fn)

@@ -58,7 +58,7 @@ class ScoreNet(BaseScoreModel):
         num_classes: Optional[int] = None,
     ) -> None:
         if channels is None:
-            channels = [32, 64, 128, 256]
+            channels = [32, 128, 128, 256]
         super().__init__(marginal_prob_std, in_channels, out_channels, num_classes)
 
         # Activation (Swish)
