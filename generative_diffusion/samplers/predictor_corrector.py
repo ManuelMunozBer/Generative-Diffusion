@@ -62,7 +62,7 @@ class PredictorCorrectorSampler(BaseSampler):
             diffusion = sde.diffusion(t_batch).view(-1, *([1] * (traj[i].ndim - 1)))
 
             noise = torch.randn_like(traj[i])
-            x = traj[i] + drift * dt + diffusion * torch.sqrt(-dt) * noise
+            x = traj[i] + drift * dt + 0.9 * diffusion * torch.sqrt(-dt) * noise
 
             # ---------- corrector (Langevin ajustado) ----------
             for _ in range(self.corrector_steps):

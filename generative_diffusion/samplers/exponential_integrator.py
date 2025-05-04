@@ -83,7 +83,7 @@ class ExponentialIntegratorSampler(BaseSampler):
             x = (
                 +drift_exp * traj[i]
                 + resultado * dt * drift_coefficient_exponencial
-                + diffusion * torch.sqrt(dt.abs()) * noise
+                + 0.9 * diffusion * torch.sqrt(dt.abs()) * noise
             )
 
             if controller is not None:

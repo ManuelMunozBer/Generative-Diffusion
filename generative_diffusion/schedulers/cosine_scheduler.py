@@ -58,9 +58,9 @@ class CosineScheduler(BaseScheduler):
 
         # Aplicar clamp interno a scaled_t para evitar tan(pi/2)
         # Clamp a un valor ligeramente menor que 1.0
-        scaled_t = torch.clamp((t + self.s) / (1 + self.s), min=0.0, max=0.9999)
+        scaled_t = torch.clamp((t + self.s) / (1 + self.s), min=0.0, max=0.99999)
         u = (pi / 2) * scaled_t
         beta_t = coef * torch.tan(u)
 
         # β(t) debe estar acotado para evitar inestabilidades
-        return torch.clamp(beta_t, min=self._EPS, max=0.999)
+        return torch.clamp(beta_t, min=self._EPS, max=0.99999)

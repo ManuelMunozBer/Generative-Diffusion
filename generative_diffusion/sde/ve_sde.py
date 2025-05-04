@@ -12,11 +12,12 @@ class VESDE(BaseSDE):
     Variance‑Exploding SDE (sigma ≈ 25 en Song et al., 2021).
     """
 
-    def __init__(self, *, sigma: float = 25.0) -> None:
+    def __init__(self, *, sigma: float = 25.0, coef_score: float = 1.0) -> None:
         if sigma <= 1.0:
             raise ValueError("`sigma` debe ser > 1 para VE‑SDE.")
         super().__init__()
         self.sigma = float(sigma)
+        self.coef_score = float(coef_score)
 
     # ------------------------------------------------------------------ #
     # Forward                                                            #
@@ -42,7 +43,7 @@ class VESDE(BaseSDE):
     # ------------------------------------------------------------------ #
     def backward_drift(self, x_t: Tensor, t: Tensor, score_fn) -> Tensor:
         g_t = self._broadcast(self.diffusion(t), x_t)
-        return -(g_t**2) * score_fn(x_t, t)
+        return -self.coef_score * (g_t**2) * score_fn(x_t, t)
 
     def backward_drift_exponencial(self, x_t: Tensor, t: Tensor, score_fn) -> Tensor:
         # Como no hay betas, igual que backward_drift
