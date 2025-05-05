@@ -2,7 +2,7 @@
 
 ![Python](https://img.shields.io/badge/python-3.8%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
-https://colab.research.google.com/drive/1oQLH2MrFySWSYcIiAEjTfdHL5xJ_Qm_y?usp=sharing
+[![Demo](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1oQLH2MrFySWSYcIiAEjTfdHL5xJ_Qm_y?usp=sharing)
 
 Toolkit modular para **modelos de difusión generativos** (imágenes color)
 con soporte para:
@@ -20,13 +20,8 @@ con soporte para:
 pip install generative-diffusion
 ```
 
-## 🚀 Demo en Google Colab
-
-Ejecuta el notebook de demostración directamente en Colab:
-
-[![Abrir en Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1oQLH2MrFySWSYcIiAEjTfdHL5xJ_Qm_y?usp=sharing)
-
 ## Ejemplo mínimo
+[![Demo](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1oQLH2MrFySWSYcIiAEjTfdHL5xJ_Qm_y?usp=sharing)
 
 ```python
 from generative_diffusion.utils import *
