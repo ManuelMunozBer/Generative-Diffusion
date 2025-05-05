@@ -1,13 +1,13 @@
 Metadata-Version: 2.4
 Name: generative-diffusion
-Version: 0.1.0
+Version: 0.1.1
 Summary: Toolkit modular en Python para modelos generativos basados en difusión
 Author-email: Manuel Muñoz <manuel.munnozb@estudiante.uam.es>, Daniel Ortiz <daniel.ortizbuzarra@estudiante.uam.es>
 License: MIT
 Requires-Python: >=3.8
 Description-Content-Type: text/markdown
 License-File: LICENSE
-Requires-Dist: torch<2.6,>=2.5.0
+Requires-Dist: torch<2.7,>=2.5.0
 Requires-Dist: torchvision<0.21,>=0.20.0
 Requires-Dist: numpy<2.2,>=1.24
 Requires-Dist: scipy<1.14,>=1.9
