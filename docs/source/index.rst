@@ -97,3 +97,12 @@ Welcome to generative_diffusion's documentation!
    :members:
    :undoc-members:
    :show-inheritance:
+
+Examples
+========
+
+.. toctree::
+   :maxdepth: 1
+
+   notebooks/simple_demo
+   notebooks/pruebas_validacion

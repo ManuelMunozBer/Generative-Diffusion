@@ -1,0 +1,731 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="es" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Difusión Generativa: Entrenamiento y Generación con MNIST a Color &mdash; documentación de generative_diffusion - 1.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=4936afed"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/translations.js?v=d190bf04"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../search.html" />
+    <link rel="next" title="Modelos" href="pruebas_validacion.html" />
+    <link rel="prev" title="Welcome to generative_diffusion’s documentation!" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            generative_diffusion
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Buscar documentos" aria-label="Buscar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Difusión Generativa: Entrenamiento y Generación con MNIST a Color</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#1.-Cargar-y-preparar-un-dataset-MNIST-a-color">1. Cargar y preparar un dataset MNIST a color</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#2.-Configurar-el-modelo-de-difusión">2. Configurar el modelo de difusión</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#3.-Entrenar-el-modelo">3. Entrenar el modelo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#4.-Generar-imágenes-del-dígito-especificado">4. Generar imágenes del dígito especificado</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#5.-Generar-imágenes-de-dígitos-a-color-de-una-clase-específica-con-imputación">5. Generar imágenes de dígitos a color de una clase específica con imputación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pruebas_validacion.html">Modelos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pruebas_validacion.html#Imputation">Imputation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">generative_diffusion</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Difusión Generativa: Entrenamiento y Generación con MNIST a Color</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/notebooks/simple_demo.ipynb.txt" rel="nofollow"> Ver código fuente de la página</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Difusión-Generativa:-Entrenamiento-y-Generación-con-MNIST-a-Color">
+<h1>Difusión Generativa: Entrenamiento y Generación con MNIST a Color<a class="headerlink" href="#Difusión-Generativa:-Entrenamiento-y-Generación-con-MNIST-a-Color" title="Link to this heading"></a></h1>
+<p>Este notebook demuestra cómo utilizar el framework de difusión generativa para:</p>
+<ol class="arabic">
+<li><p>Cargar y preparar un dataset MNIST a color</p></li>
+<li><p>Configurar modelo de difusión</p></li>
+<li><p>Entrenar modelo de difusion</p></li>
+<li><p>Generar imágenes de dígitos a color de una clase específica</p></li>
+<li><p class="rubric" id="generar-imagenes-de-digitos-a-color-de-una-clase-especifica-con-imputacion">Generar imágenes de dígitos a color de una clase específica con imputación</p>
+</li>
+</ol>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">&quot;..&quot;</span><span class="p">))</span>  <span class="c1"># Añadir raíz del proyecto al path</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Importar componentes del framework de difusión</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">generative_diffusion.utils</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">generative_diffusion.diffusion</span><span class="w"> </span><span class="kn">import</span> <span class="n">ModelFactory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">generative_diffusion.score_networks</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScoreNet</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Configurar parámetros</span>
+<span class="n">BATCH_SIZE</span> <span class="o">=</span> <span class="mi">32</span>
+<span class="n">N_EPOCHS</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">LR</span> <span class="o">=</span> <span class="mf">1e-3</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="1.-Cargar-y-preparar-un-dataset-MNIST-a-color">
+<h1>1. Cargar y preparar un dataset MNIST a color<a class="headerlink" href="#1.-Cargar-y-preparar-un-dataset-MNIST-a-color" title="Link to this heading"></a></h1>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Preparando dataset MNIST a color...&quot;</span><span class="p">)</span>
+<span class="n">data_manager</span> <span class="o">=</span> <span class="n">DatasetManager</span><span class="p">(</span><span class="n">root_dir</span><span class="o">=</span><span class="s2">&quot;../data&quot;</span><span class="p">)</span>
+<span class="c1"># Crear dataset MNIST a color</span>
+<span class="n">mnist_train_dataset</span> <span class="o">=</span> <span class="n">data_manager</span><span class="o">.</span><span class="n">mnist</span><span class="p">()</span>
+<span class="c1"># Crear dataloaders</span>
+<span class="n">train_dataloader</span> <span class="o">=</span> <span class="n">data_manager</span><span class="o">.</span><span class="n">get_dataloader</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">mnist_train_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">BATCH_SIZE</span><span class="p">)</span>
+<span class="c1"># Visualizar un batch de imágenes</span>
+<span class="n">show_images</span><span class="p">(</span><span class="n">train_dataloader</span><span class="p">,</span> <span class="n">n_images</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Imágenes del dataset&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Preparando dataset MNIST a color...
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_simple_demo_5_1.png" src="../_images/notebooks_simple_demo_5_1.png" />
+</div>
+</div>
+</section>
+<section id="2.-Configurar-el-modelo-de-difusión">
+<h1>2. Configurar el modelo de difusión<a class="headerlink" href="#2.-Configurar-el-modelo-de-difusión" title="Link to this heading"></a></h1>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Configurando el modelo de difusión...&quot;</span><span class="p">)</span>
+<span class="c1"># Crear modelo de difusión utilizando el ModelFactory</span>
+<span class="n">diffusion_model</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">score_model_class</span><span class="o">=</span><span class="n">ScoreNet</span><span class="p">,</span>
+    <span class="n">is_conditional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">sde_name</span><span class="o">=</span><span class="s1">&#39;ve_sde&#39;</span><span class="p">,</span>
+    <span class="n">sampler_name</span><span class="o">=</span><span class="s1">&#39;euler_maruyama&#39;</span><span class="p">,</span>
+    <span class="c1"># scheduler_name=&#39;cosine&#39;,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:32:10,719 — DiffusionModel — INFO — Modelo de difusión inicializado en dispositivo: cuda</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configurando el modelo de difusión...
+</pre></div></div>
+</div>
+</section>
+<section id="3.-Entrenar-el-modelo">
+<h1>3. Entrenar el modelo<a class="headerlink" href="#3.-Entrenar-el-modelo" title="Link to this heading"></a></h1>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Entrenando el modelo por </span><span class="si">{</span><span class="n">N_EPOCHS</span><span class="si">}</span><span class="s2"> epochs...&quot;</span><span class="p">)</span>
+
+<span class="c1"># Función para mostrar el progreso del entrenamiento</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">training_callback</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">history</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Epoch </span><span class="si">{</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">, Loss: </span><span class="si">{</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;loss&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Entrenar el modelo</span>
+<span class="n">training_history</span> <span class="o">=</span> <span class="n">diffusion_model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span>
+    <span class="n">dataloader</span><span class="o">=</span><span class="n">train_dataloader</span><span class="p">,</span>
+    <span class="n">n_epochs</span><span class="o">=</span><span class="n">N_EPOCHS</span><span class="p">,</span>
+    <span class="n">lr</span><span class="o">=</span><span class="n">LR</span><span class="p">,</span>
+    <span class="n">checkpoint_interval</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">callback</span><span class="o">=</span><span class="n">training_callback</span>
+<span class="p">)</span>
+<span class="n">plot_training_history</span><span class="p">(</span><span class="n">training_history</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Pérdida del modelo de difusión&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:32:10,807 — DiffusionModel — INFO — Modelo de score inicializado correctamente</span>
+<span class="ansi-green-fg">2025-05-05 00:32:10,810 — DiffusionModel — INFO — Iniciando entrenamiento por 10 epochs</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Entrenando el modelo por 10 epochs...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "0e4fc994e5074b95bf019cbad7982b30", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "a0d9e3a685d343b7a247674f02b3ecd1", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:33:27,796 — DiffusionModel — INFO — Epoch 1/10, Loss: 198.151941</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Epoch 1, Loss: 198.151941
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "1a323275f6b04cee8123a51870542052", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:34:44,165 — DiffusionModel — INFO — Epoch 2/10, Loss: 67.023044</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Epoch 2, Loss: 67.023044
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "bef1a4ac3cb148d69ebc9cfd99c70d96", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:36:00,754 — DiffusionModel — INFO — Epoch 3/10, Loss: 54.943457</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Epoch 3, Loss: 54.943457
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "c03e9ae0b1a54c03b09f3eecf69ea387", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:37:12,827 — DiffusionModel — INFO — Epoch 4/10, Loss: 48.052523</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Epoch 4, Loss: 48.052523
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "98c8e26bc72f4c62bf9ef7c9aa76f6be", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:38:26,279 — DiffusionModel — INFO — Epoch 5/10, Loss: 44.115630</span>
+<span class="ansi-green-fg">2025-05-05 00:38:26,389 — DiffusionModel — INFO — Checkpoint guardado en ../checkpoints/Diffusion_model_VESDE_is_conditional_True_checkpoint_epoch_5.pt</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Epoch 5, Loss: 44.115630
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "952cab373c6e4beb8efce129817a91ad", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:39:40,922 — DiffusionModel — INFO — Epoch 6/10, Loss: 41.217735</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Epoch 6, Loss: 41.217735
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "338802e3bc694b338f4c49cbcba4f195", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:40:54,883 — DiffusionModel — INFO — Epoch 7/10, Loss: 38.976167</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Epoch 7, Loss: 38.976167
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "425553fe6acb4f74906bad305c79891f", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:42:09,089 — DiffusionModel — INFO — Epoch 8/10, Loss: 37.386725</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Epoch 8, Loss: 37.386725
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "7c32a2f785774fe8a0c75817f5f4bc1c", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:43:23,036 — DiffusionModel — INFO — Epoch 9/10, Loss: 35.679349</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Epoch 9, Loss: 35.679349
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "2eaa54e01ac04d10bd0b0855166c0680", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:44:34,311 — DiffusionModel — INFO — Epoch 10/10, Loss: 35.224183</span>
+<span class="ansi-green-fg">2025-05-05 00:44:34,412 — DiffusionModel — INFO — Checkpoint guardado en ../checkpoints/Diffusion_model_VESDE_is_conditional_True_checkpoint_epoch_10.pt</span>
+<span class="ansi-green-fg">2025-05-05 00:44:34,490 — DiffusionModel — INFO — Modelo final guardado en ../checkpoints/Diffusion_model_VESDE_is_conditional_True.pt</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Epoch 10, Loss: 35.224183
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_simple_demo_9_33.png" src="../_images/notebooks_simple_demo_9_33.png" />
+</div>
+</div>
+</section>
+<section id="4.-Generar-imágenes-del-dígito-especificado">
+<h1>4. Generar imágenes del dígito especificado<a class="headerlink" href="#4.-Generar-imágenes-del-dígito-especificado" title="Link to this heading"></a></h1>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cargar un modelo pre-entrenado</span>
+<span class="n">diffusion_model</span><span class="o">.</span><span class="n">load_score_model</span><span class="p">(</span><span class="s2">&quot;../checkpoints/Diffusion_model_VESDE_is_conditional_True.pt&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:44:34,972 — DiffusionModel — INFO — Cargando modelo desde ../checkpoints/ve_sde.pt</span>
+<span class="ansi-green-fg">2025-05-05 00:44:35,002 — DiffusionModel — INFO — Forma de datos cargada: torch.Size([3, 28, 28])</span>
+<span class="ansi-green-fg">2025-05-05 00:44:35,004 — DiffusionModel — INFO — Parámetros del modelo actualizados desde checkpoint</span>
+<span class="ansi-green-fg">2025-05-05 00:44:35,010 — DiffusionModel — INFO — Modelo cargado correctamente</span>
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DIGIT_CLASS</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="c1"># Parámetros para generación</span>
+<span class="n">N_SAMPLES</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="n">N_STEPS</span> <span class="o">=</span> <span class="mi">500</span>
+
+<span class="c1"># Crear tensor de condición para el dígito especificado</span>
+<span class="n">condition</span> <span class="o">=</span> <span class="p">[</span><span class="n">DIGIT_CLASS</span><span class="p">]</span><span class="o">*</span><span class="n">N_SAMPLES</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generar imágenes</span>
+<span class="n">generated_images</span><span class="p">,</span> <span class="n">condition</span> <span class="o">=</span> <span class="n">diffusion_model</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+    <span class="n">n_samples</span><span class="o">=</span><span class="n">N_SAMPLES</span><span class="p">,</span>
+    <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span>
+    <span class="n">n_steps</span><span class="o">=</span><span class="n">N_STEPS</span>
+<span class="p">)</span>
+<span class="c1"># Mostrar imágenes generadas</span>
+<span class="n">show_images</span><span class="p">(</span><span class="n">generated_images</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Dígitos generados con difusión&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">condition</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:44:35,077 — DiffusionModel — INFO — Generando 8 muestras con 500 pasos</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_simple_demo_13_1.png" src="../_images/notebooks_simple_demo_13_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Evaluar calidad con las métricas implementadas</span>
+<span class="n">metrics</span> <span class="o">=</span> <span class="n">diffusion_model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span>
+    <span class="n">generated_samples</span><span class="o">=</span><span class="n">generated_images</span><span class="p">,</span>
+    <span class="n">real_dataloader</span><span class="o">=</span><span class="n">train_dataloader</span><span class="p">,</span>
+    <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;fid&quot;</span><span class="p">,</span> <span class="s2">&quot;is&quot;</span><span class="p">,</span> <span class="s2">&quot;bpd&quot;</span><span class="p">],</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="n">BATCH_SIZE</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Resultados de calidad:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;FID: </span><span class="si">{</span><span class="n">metrics</span><span class="p">[</span><span class="s1">&#39;fid&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> (menor es mejor)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Inception Score: </span><span class="si">{</span><span class="n">metrics</span><span class="p">[</span><span class="s1">&#39;is&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> (mayor es mejor)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Bits per Dimension: </span><span class="si">{</span><span class="n">metrics</span><span class="p">[</span><span class="s1">&#39;bpd&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> (menor es mejor)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:44:39,510 — DiffusionModel — INFO — Recopilando imágenes reales para comparación</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "a2b1183eedee4c8988165135479c497b", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:44:39,709 — DiffusionModel — INFO — Calculando FID (Fréchet Inception Distance)...</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "8b8198884ba64644bedaef09fb8e1026", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "62d869d9f7d54460a84bbcd73802b5f7", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:44:58,137 — DiffusionModel — INFO — FID: 228.4721 (menor es mejor)</span>
+<span class="ansi-green-fg">2025-05-05 00:44:58,143 — DiffusionModel — INFO — Calculando IS (Inception Score)...</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "3b863dafbdba4659aa16a88e22452cc9", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:44:59,096 — DiffusionModel — INFO — Inception Score: 1.0000 (mayor es mejor)</span>
+<span class="ansi-green-fg">2025-05-05 00:44:59,099 — DiffusionModel — INFO — Calculando BPD (Bits Per Dimension)...</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "a57dffde472c49b0b659e57ac2fd48c9", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:44:59,362 — DiffusionModel — INFO — BPD: 3.4511 (menor es mejor)</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+Resultados de calidad:
+FID: 228.4721 (menor es mejor)
+Inception Score: 1.0000 (mayor es mejor)
+Bits per Dimension: 3.4511 (menor es mejor)
+</pre></div></div>
+</div>
+</section>
+<section id="5.-Generar-imágenes-de-dígitos-a-color-de-una-clase-específica-con-imputación">
+<h1>5. Generar imágenes de dígitos a color de una clase específica con imputación<a class="headerlink" href="#5.-Generar-imágenes-de-dígitos-a-color-de-una-clase-específica-con-imputación" title="Link to this heading"></a></h1>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">generative_diffusion.controllable</span><span class="w"> </span><span class="kn">import</span> <span class="n">random_mask</span>
+
+<span class="c1"># Obtener un batch de imágenes del dataloader</span>
+<span class="n">images</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">train_dataloader</span><span class="p">))</span>
+<span class="n">images</span> <span class="o">=</span> <span class="n">images</span><span class="p">[:</span><span class="n">N_SAMPLES</span><span class="p">]</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[:</span><span class="n">N_SAMPLES</span><span class="p">]</span>
+
+<span class="c1"># mask = center_square_mask(images, keep_ratio=0.4)</span>
+<span class="c1"># mask = border_mask(images, border_ratio=0.3)</span>
+<span class="n">mask</span> <span class="o">=</span> <span class="n">random_mask</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">prob</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Imputando las imágenes enmascaradas...&quot;</span><span class="p">)</span>
+<span class="c1"># Realizar la imputación</span>
+<span class="n">imputed_images</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">diffusion_model</span><span class="o">.</span><span class="n">impute</span><span class="p">(</span>
+    <span class="n">image</span><span class="o">=</span><span class="n">images</span><span class="p">,</span>
+    <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span>
+    <span class="n">condition</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Mostrar resultados de imputación</span>
+<span class="n">show_imputation_results</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">imputed_images</span><span class="p">,</span> <span class="n">original_labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">imputed_labels</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:44:59,552 — DiffusionModel — INFO — Generando 8 muestras con 500 pasos</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Imputando las imágenes enmascaradas...
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_simple_demo_16_2.png" src="../_images/notebooks_simple_demo_16_2.png" />
+</div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pie de página">
+        <a href="../index.html" class="btn btn-neutral float-left" title="Welcome to generative_diffusion’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Anterior</a>
+        <a href="pruebas_validacion.html" class="btn btn-neutral float-right" title="Modelos" accesskey="n" rel="next">Siguiente <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Derechos de autor 2025, Manuel Muñoz.</p>
+  </div>
+
+  Compilado con <a href="https://www.sphinx-doc.org/">Sphinx</a> usando un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    proporcionado por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

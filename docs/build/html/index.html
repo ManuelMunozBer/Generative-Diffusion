@@ -17,9 +17,13 @@
       <script src="_static/doctools.js?v=9a2dae69"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/translations.js?v=d190bf04"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Índice" href="genindex.html" />
-    <link rel="search" title="Búsqueda" href="search.html" /> 
+    <link rel="search" title="Búsqueda" href="search.html" />
+    <link rel="next" title="Difusión Generativa: Entrenamiento y Generación con MNIST a Color" href="notebooks/simple_demo.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -41,132 +45,17 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">Welcome to generative_diffusion’s documentation!</a><ul>
-<li><a class="reference internal" href="#generative_diffusion.diffusion.diffusion_core.DiffusionModel"><code class="docutils literal notranslate"><span class="pre">DiffusionModel</span></code></a><ul>
-<li><a class="reference internal" href="#generative_diffusion.diffusion.diffusion_core.DiffusionModel.evaluate"><code class="docutils literal notranslate"><span class="pre">DiffusionModel.evaluate()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.diffusion.diffusion_core.DiffusionModel.generate"><code class="docutils literal notranslate"><span class="pre">DiffusionModel.generate()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.diffusion.diffusion_core.DiffusionModel.impute"><code class="docutils literal notranslate"><span class="pre">DiffusionModel.impute()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.diffusion.diffusion_core.DiffusionModel.load_score_model"><code class="docutils literal notranslate"><span class="pre">DiffusionModel.load_score_model()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.diffusion.diffusion_core.DiffusionModel.train"><code class="docutils literal notranslate"><span class="pre">DiffusionModel.train()</span></code></a></li>
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/simple_demo.html">Difusión Generativa: Entrenamiento y Generación con MNIST a Color</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/simple_demo.html#1.-Cargar-y-preparar-un-dataset-MNIST-a-color">1. Cargar y preparar un dataset MNIST a color</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/simple_demo.html#2.-Configurar-el-modelo-de-difusión">2. Configurar el modelo de difusión</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/simple_demo.html#3.-Entrenar-el-modelo">3. Entrenar el modelo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/simple_demo.html#4.-Generar-imágenes-del-dígito-especificado">4. Generar imágenes del dígito especificado</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/simple_demo.html#5.-Generar-imágenes-de-dígitos-a-color-de-una-clase-específica-con-imputación">5. Generar imágenes de dígitos a color de una clase específica con imputación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/pruebas_validacion.html">Modelos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/pruebas_validacion.html#Imputation">Imputation</a></li>
 </ul>
-</li>
-<li><a class="reference internal" href="#generative_diffusion.diffusion.diffusion_core.ModelNotInitializedError"><code class="docutils literal notranslate"><span class="pre">ModelNotInitializedError</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.diffusion.diffusion_factory.ModelFactory"><code class="docutils literal notranslate"><span class="pre">ModelFactory</span></code></a><ul>
-<li><a class="reference internal" href="#generative_diffusion.diffusion.diffusion_factory.ModelFactory.create"><code class="docutils literal notranslate"><span class="pre">ModelFactory.create()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#generative_diffusion.samplers.base_sampler.BaseSampler"><code class="docutils literal notranslate"><span class="pre">BaseSampler</span></code></a><ul>
-<li><a class="reference internal" href="#generative_diffusion.samplers.base_sampler.BaseSampler.sample"><code class="docutils literal notranslate"><span class="pre">BaseSampler.sample()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#generative_diffusion.samplers.base_sampler.ConditionalWrapper"><code class="docutils literal notranslate"><span class="pre">ConditionalWrapper</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.samplers.euler_maruyama.EulerMaruyamaSampler"><code class="docutils literal notranslate"><span class="pre">EulerMaruyamaSampler</span></code></a><ul>
-<li><a class="reference internal" href="#generative_diffusion.samplers.euler_maruyama.EulerMaruyamaSampler.sample"><code class="docutils literal notranslate"><span class="pre">EulerMaruyamaSampler.sample()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#generative_diffusion.samplers.predictor_corrector.PredictorCorrectorSampler"><code class="docutils literal notranslate"><span class="pre">PredictorCorrectorSampler</span></code></a><ul>
-<li><a class="reference internal" href="#generative_diffusion.samplers.predictor_corrector.PredictorCorrectorSampler.sample"><code class="docutils literal notranslate"><span class="pre">PredictorCorrectorSampler.sample()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#generative_diffusion.samplers.probability_flow_ode.ProbabilityFlowODESampler"><code class="docutils literal notranslate"><span class="pre">ProbabilityFlowODESampler</span></code></a><ul>
-<li><a class="reference internal" href="#generative_diffusion.samplers.probability_flow_ode.ProbabilityFlowODESampler.sample"><code class="docutils literal notranslate"><span class="pre">ProbabilityFlowODESampler.sample()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#generative_diffusion.samplers.exponential_integrator.ExponentialIntegratorSampler"><code class="docutils literal notranslate"><span class="pre">ExponentialIntegratorSampler</span></code></a><ul>
-<li><a class="reference internal" href="#generative_diffusion.samplers.exponential_integrator.ExponentialIntegratorSampler.sample"><code class="docutils literal notranslate"><span class="pre">ExponentialIntegratorSampler.sample()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#generative_diffusion.sde.base_sde.BaseSDE"><code class="docutils literal notranslate"><span class="pre">BaseSDE</span></code></a><ul>
-<li><a class="reference internal" href="#generative_diffusion.sde.base_sde.BaseSDE.backward_drift"><code class="docutils literal notranslate"><span class="pre">BaseSDE.backward_drift()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.sde.base_sde.BaseSDE.diffusion"><code class="docutils literal notranslate"><span class="pre">BaseSDE.diffusion()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.sde.base_sde.BaseSDE.drift"><code class="docutils literal notranslate"><span class="pre">BaseSDE.drift()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.sde.base_sde.BaseSDE.marginal_prob"><code class="docutils literal notranslate"><span class="pre">BaseSDE.marginal_prob()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.sde.base_sde.BaseSDE.mu_t"><code class="docutils literal notranslate"><span class="pre">BaseSDE.mu_t()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.sde.base_sde.BaseSDE.sigma_t"><code class="docutils literal notranslate"><span class="pre">BaseSDE.sigma_t()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#generative_diffusion.sde.ve_sde.VESDE"><code class="docutils literal notranslate"><span class="pre">VESDE</span></code></a><ul>
-<li><a class="reference internal" href="#generative_diffusion.sde.ve_sde.VESDE.backward_drift"><code class="docutils literal notranslate"><span class="pre">VESDE.backward_drift()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.sde.ve_sde.VESDE.backward_drift_exponencial"><code class="docutils literal notranslate"><span class="pre">VESDE.backward_drift_exponencial()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.sde.ve_sde.VESDE.diffusion"><code class="docutils literal notranslate"><span class="pre">VESDE.diffusion()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.sde.ve_sde.VESDE.drift"><code class="docutils literal notranslate"><span class="pre">VESDE.drift()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.sde.ve_sde.VESDE.drift_backward"><code class="docutils literal notranslate"><span class="pre">VESDE.drift_backward()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.sde.ve_sde.VESDE.mu_t"><code class="docutils literal notranslate"><span class="pre">VESDE.mu_t()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.sde.ve_sde.VESDE.sigma_t"><code class="docutils literal notranslate"><span class="pre">VESDE.sigma_t()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#generative_diffusion.sde.vp_sde.VPSDE"><code class="docutils literal notranslate"><span class="pre">VPSDE</span></code></a><ul>
-<li><a class="reference internal" href="#generative_diffusion.sde.vp_sde.VPSDE.backward_drift"><code class="docutils literal notranslate"><span class="pre">VPSDE.backward_drift()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.sde.vp_sde.VPSDE.backward_drift_exponencial"><code class="docutils literal notranslate"><span class="pre">VPSDE.backward_drift_exponencial()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.sde.vp_sde.VPSDE.beta_t"><code class="docutils literal notranslate"><span class="pre">VPSDE.beta_t()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.sde.vp_sde.VPSDE.diffusion"><code class="docutils literal notranslate"><span class="pre">VPSDE.diffusion()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.sde.vp_sde.VPSDE.drift"><code class="docutils literal notranslate"><span class="pre">VPSDE.drift()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.sde.vp_sde.VPSDE.drift_backward"><code class="docutils literal notranslate"><span class="pre">VPSDE.drift_backward()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.sde.vp_sde.VPSDE.mu_t"><code class="docutils literal notranslate"><span class="pre">VPSDE.mu_t()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.sde.vp_sde.VPSDE.sigma_t"><code class="docutils literal notranslate"><span class="pre">VPSDE.sigma_t()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#generative_diffusion.sde.subvp_sde.SubVPSDE"><code class="docutils literal notranslate"><span class="pre">SubVPSDE</span></code></a><ul>
-<li><a class="reference internal" href="#generative_diffusion.sde.subvp_sde.SubVPSDE.backward_drift"><code class="docutils literal notranslate"><span class="pre">SubVPSDE.backward_drift()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.sde.subvp_sde.SubVPSDE.backward_drift_exponencial"><code class="docutils literal notranslate"><span class="pre">SubVPSDE.backward_drift_exponencial()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.sde.subvp_sde.SubVPSDE.beta_t"><code class="docutils literal notranslate"><span class="pre">SubVPSDE.beta_t()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.sde.subvp_sde.SubVPSDE.diffusion"><code class="docutils literal notranslate"><span class="pre">SubVPSDE.diffusion()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.sde.subvp_sde.SubVPSDE.drift"><code class="docutils literal notranslate"><span class="pre">SubVPSDE.drift()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.sde.subvp_sde.SubVPSDE.drift_backward"><code class="docutils literal notranslate"><span class="pre">SubVPSDE.drift_backward()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.sde.subvp_sde.SubVPSDE.mu_t"><code class="docutils literal notranslate"><span class="pre">SubVPSDE.mu_t()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.sde.subvp_sde.SubVPSDE.sigma_t"><code class="docutils literal notranslate"><span class="pre">SubVPSDE.sigma_t()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#generative_diffusion.score_networks.base_score_model.BaseScoreModel"><code class="docutils literal notranslate"><span class="pre">BaseScoreModel</span></code></a><ul>
-<li><a class="reference internal" href="#generative_diffusion.score_networks.base_score_model.BaseScoreModel.forward"><code class="docutils literal notranslate"><span class="pre">BaseScoreModel.forward()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#generative_diffusion.score_networks.unet_score_network.Dense"><code class="docutils literal notranslate"><span class="pre">Dense</span></code></a><ul>
-<li><a class="reference internal" href="#generative_diffusion.score_networks.unet_score_network.Dense.forward"><code class="docutils literal notranslate"><span class="pre">Dense.forward()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#generative_diffusion.score_networks.unet_score_network.GaussianRandomFourierFeatures"><code class="docutils literal notranslate"><span class="pre">GaussianRandomFourierFeatures</span></code></a><ul>
-<li><a class="reference internal" href="#generative_diffusion.score_networks.unet_score_network.GaussianRandomFourierFeatures.forward"><code class="docutils literal notranslate"><span class="pre">GaussianRandomFourierFeatures.forward()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#generative_diffusion.score_networks.unet_score_network.ScoreNet"><code class="docutils literal notranslate"><span class="pre">ScoreNet</span></code></a><ul>
-<li><a class="reference internal" href="#generative_diffusion.score_networks.unet_score_network.ScoreNet.forward"><code class="docutils literal notranslate"><span class="pre">ScoreNet.forward()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#generative_diffusion.controllable.base_controller.BaseController"><code class="docutils literal notranslate"><span class="pre">BaseController</span></code></a><ul>
-<li><a class="reference internal" href="#generative_diffusion.controllable.base_controller.BaseController.prepare_initial"><code class="docutils literal notranslate"><span class="pre">BaseController.prepare_initial()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.controllable.base_controller.BaseController.process_step"><code class="docutils literal notranslate"><span class="pre">BaseController.process_step()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#generative_diffusion.controllable.imputation_controller.ImputationController"><code class="docutils literal notranslate"><span class="pre">ImputationController</span></code></a><ul>
-<li><a class="reference internal" href="#generative_diffusion.controllable.imputation_controller.ImputationController.prepare_initial"><code class="docutils literal notranslate"><span class="pre">ImputationController.prepare_initial()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.controllable.imputation_controller.ImputationController.process_step"><code class="docutils literal notranslate"><span class="pre">ImputationController.process_step()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#generative_diffusion.measures.measures.InceptionModel"><code class="docutils literal notranslate"><span class="pre">InceptionModel</span></code></a><ul>
-<li><a class="reference internal" href="#generative_diffusion.measures.measures.InceptionModel.forward"><code class="docutils literal notranslate"><span class="pre">InceptionModel.forward()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#generative_diffusion.measures.measures.calculate_bpd"><code class="docutils literal notranslate"><span class="pre">calculate_bpd()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.measures.measures.calculate_fid"><code class="docutils literal notranslate"><span class="pre">calculate_fid()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.measures.measures.calculate_inception_score"><code class="docutils literal notranslate"><span class="pre">calculate_inception_score()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.measures.measures.extract_features"><code class="docutils literal notranslate"><span class="pre">extract_features()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.utils.data_utils.DatasetManager"><code class="docutils literal notranslate"><span class="pre">DatasetManager</span></code></a><ul>
-<li><a class="reference internal" href="#generative_diffusion.utils.data_utils.DatasetManager.cifar10"><code class="docutils literal notranslate"><span class="pre">DatasetManager.cifar10()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.utils.data_utils.DatasetManager.get_dataloader"><code class="docutils literal notranslate"><span class="pre">DatasetManager.get_dataloader()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.utils.data_utils.DatasetManager.mnist"><code class="docutils literal notranslate"><span class="pre">DatasetManager.mnist()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#generative_diffusion.utils.visualization_utils.plot_training_history"><code class="docutils literal notranslate"><span class="pre">plot_training_history()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.utils.visualization_utils.show_generation_process"><code class="docutils literal notranslate"><span class="pre">show_generation_process()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.utils.visualization_utils.show_images"><code class="docutils literal notranslate"><span class="pre">show_images()</span></code></a></li>
-<li><a class="reference internal" href="#generative_diffusion.utils.visualization_utils.show_imputation_results"><code class="docutils literal notranslate"><span class="pre">show_imputation_results()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</div>
+
         </div>
       </div>
     </nav>
@@ -1196,11 +1085,28 @@ coloreado, subconjuntos y <cite>DataLoader</cite> listos para entrenar.</p>
 </dd></dl>
 
 </section>
+<section id="examples">
+<h1>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/simple_demo.html">Difusión Generativa: Entrenamiento y Generación con MNIST a Color</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/simple_demo.html#1.-Cargar-y-preparar-un-dataset-MNIST-a-color">1. Cargar y preparar un dataset MNIST a color</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/simple_demo.html#2.-Configurar-el-modelo-de-difusión">2. Configurar el modelo de difusión</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/simple_demo.html#3.-Entrenar-el-modelo">3. Entrenar el modelo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/simple_demo.html#4.-Generar-imágenes-del-dígito-especificado">4. Generar imágenes del dígito especificado</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/simple_demo.html#5.-Generar-imágenes-de-dígitos-a-color-de-una-clase-específica-con-imputación">5. Generar imágenes de dígitos a color de una clase específica con imputación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/pruebas_validacion.html">Modelos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/pruebas_validacion.html#Imputation">Imputation</a></li>
+</ul>
+</div>
+</section>
 
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pie de página">
+        <a href="notebooks/simple_demo.html" class="btn btn-neutral float-right" title="Difusión Generativa: Entrenamiento y Generación con MNIST a Color" accesskey="n" rel="next">Siguiente <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

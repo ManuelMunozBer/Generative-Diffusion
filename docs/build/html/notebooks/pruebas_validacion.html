@@ -1,0 +1,3013 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="es" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modelos &mdash; documentación de generative_diffusion - 1.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=4936afed"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/translations.js?v=d190bf04"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../search.html" />
+    <link rel="prev" title="Difusión Generativa: Entrenamiento y Generación con MNIST a Color" href="simple_demo.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            generative_diffusion
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Buscar documentos" aria-label="Buscar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="simple_demo.html">Difusión Generativa: Entrenamiento y Generación con MNIST a Color</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simple_demo.html#1.-Cargar-y-preparar-un-dataset-MNIST-a-color">1. Cargar y preparar un dataset MNIST a color</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simple_demo.html#2.-Configurar-el-modelo-de-difusión">2. Configurar el modelo de difusión</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simple_demo.html#3.-Entrenar-el-modelo">3. Entrenar el modelo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simple_demo.html#4.-Generar-imágenes-del-dígito-especificado">4. Generar imágenes del dígito especificado</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simple_demo.html#5.-Generar-imágenes-de-dígitos-a-color-de-una-clase-específica-con-imputación">5. Generar imágenes de dígitos a color de una clase específica con imputación</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Modelos</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#VE">VE</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Euler-Maruyama">Euler Maruyama</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Predictor---Corrector">Predictor - Corrector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Flow-ODE">Flow ODE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Exponential-Integrator">Exponential Integrator</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#VP---Linear">VP - Linear</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Euler Maruyama</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Predictor-corrector">Predictor corrector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Flow ODE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">Exponential Integrator</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#VP---Cosine">VP - Cosine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id5">Euler Maruyama</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">Predictor - Corrector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">Flow ODE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">Exponential Integrator</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#SubVP---Linear">SubVP - Linear</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id9">Euler Maruyama</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">Predictor - Corrector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id11">Flow ODE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id12">Exponential Integrator</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#SubVP---Cosine">SubVP - Cosine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id13">Euler Maruyama</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Predictor---corrector">Predictor - corrector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id15">Flow ODE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id16">Exponential Integrator</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#Imputation">Imputation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#VE---Flow-ODE">VE - Flow ODE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#VP-Linear---Exponencial-Integrator">VP Linear - Exponencial Integrator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#VP-Cosine---Predictor-Corrector">VP Cosine - Predictor Corrector</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">generative_diffusion</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Modelos</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/notebooks/pruebas_validacion.ipynb.txt" rel="nofollow"> Ver código fuente de la página</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">&quot;..&quot;</span><span class="p">))</span>  <span class="c1"># Añadir raíz del proyecto al path</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Importar componentes del framework de difusión</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">generative_diffusion.utils</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">generative_diffusion.diffusion</span><span class="w"> </span><span class="kn">import</span> <span class="n">ModelFactory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">generative_diffusion.score_networks</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScoreNet</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Configurar parámetros</span>
+<span class="n">BATCH_SIZE</span> <span class="o">=</span> <span class="mi">32</span>
+<span class="n">N_EPOCHS</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="n">LR</span> <span class="o">=</span> <span class="mf">1e-3</span>
+<span class="n">CHECKPOINT_INTERVAL</span> <span class="o">=</span> <span class="mi">5</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch.utils.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataLoader</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torchvision</span><span class="w"> </span><span class="kn">import</span> <span class="n">datasets</span><span class="p">,</span> <span class="n">transforms</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+
+<span class="n">transform</span> <span class="o">=</span> <span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">([</span>
+    <span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">(),</span>
+    <span class="n">transforms</span><span class="o">.</span><span class="n">Lambda</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
+    <span class="n">transforms</span><span class="o">.</span><span class="n">Lambda</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(),</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(),</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()])</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="p">])</span>
+
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">MNIST</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="s1">&#39;../data&#39;</span><span class="p">,</span>
+                         <span class="n">train</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                         <span class="n">download</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                         <span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">)</span>
+
+<span class="n">train_dataloader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span>
+    <span class="n">dataset</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="n">BATCH_SIZE</span><span class="p">,</span>
+    <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Visualizar un batch de imágenes</span>
+<span class="n">show_images</span><span class="p">(</span><span class="n">train_dataloader</span><span class="p">,</span> <span class="n">n_images</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Imágenes del dataset&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_pruebas_validacion_3_0.png" src="../_images/notebooks_pruebas_validacion_3_0.png" />
+</div>
+</div>
+<section id="Modelos">
+<h1>Modelos<a class="headerlink" href="#Modelos" title="Link to this heading"></a></h1>
+<hr class="docutils" />
+<section id="VE">
+<h2>VE<a class="headerlink" href="#VE" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Configurando el modelo de difusión...&quot;</span><span class="p">)</span>
+<span class="c1"># Crear modelo de difusión utilizando el ModelFactory</span>
+<span class="n">diffusion_model_ve</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">score_model_class</span><span class="o">=</span><span class="n">ScoreNet</span><span class="p">,</span>
+    <span class="n">is_conditional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">sde_name</span><span class="o">=</span><span class="s1">&#39;ve_sde&#39;</span><span class="p">,</span>
+    <span class="n">sampler_name</span><span class="o">=</span><span class="s2">&quot;probability_flow_ode&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:01:50,047 — DiffusionModel — INFO — Modelo de difusión inicializado en dispositivo: cuda</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configurando el modelo de difusión...
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># N_EPOCHS = 30</span>
+<span class="c1"># print(f&quot;Entrenando el modelo por {N_EPOCHS} epochs...&quot;)</span>
+
+<span class="c1"># # Función para mostrar el progreso del entrenamiento</span>
+<span class="c1"># def training_callback(model, epoch, history):</span>
+<span class="c1">#     print(f&quot;Epoch {epoch+1}, Loss: {history[&#39;loss&#39;][-1]:.6f}&quot;)</span>
+
+<span class="c1"># # Entrenar el modelo</span>
+<span class="c1"># training_history = diffusion_model_ve.train(</span>
+<span class="c1">#     dataloader=train_dataloader,</span>
+<span class="c1">#     n_epochs=N_EPOCHS,</span>
+<span class="c1">#     lr=LR,</span>
+<span class="c1">#     checkpoint_interval=CHECKPOINT_INTERVAL,</span>
+<span class="c1">#     callback=training_callback,</span>
+<span class="c1">#     model_file_name = &quot;ve_sde&quot;</span>
+<span class="c1"># )</span>
+<span class="c1"># plot_training_history(training_history, title=&quot;Pérdida del modelo de difusión&quot;)</span>
+</pre></div>
+</div>
+</div>
+<section id="Euler-Maruyama">
+<h3>Euler Maruyama<a class="headerlink" href="#Euler-Maruyama" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Configurando el modelo de difusión...&quot;</span><span class="p">)</span>
+<span class="c1"># Crear modelo de difusión utilizando el ModelFactory</span>
+<span class="n">diffusion_model_ve_euler</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">score_model_class</span><span class="o">=</span><span class="n">ScoreNet</span><span class="p">,</span>
+    <span class="n">is_conditional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">sde_name</span><span class="o">=</span><span class="s1">&#39;ve_sde&#39;</span><span class="p">,</span>
+    <span class="n">sampler_name</span><span class="o">=</span><span class="s2">&quot;euler_maruyama&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:01:50,087 — DiffusionModel — INFO — Modelo de difusión inicializado en dispositivo: cuda</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configurando el modelo de difusión...
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cargar un modelo pre-entrenado</span>
+<span class="n">diffusion_model_ve_euler</span><span class="o">.</span><span class="n">load_score_model</span><span class="p">(</span><span class="s2">&quot;../checkpoints/ve_sde.pt&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:01:50,112 — DiffusionModel — INFO — Cargando modelo desde ../checkpoints/ve_sde.pt</span>
+<span class="ansi-green-fg">2025-05-05 00:01:50,374 — DiffusionModel — INFO — Forma de datos cargada: torch.Size([3, 28, 28])</span>
+<span class="ansi-green-fg">2025-05-05 00:01:50,376 — DiffusionModel — INFO — Parámetros del modelo actualizados desde checkpoint</span>
+<span class="ansi-green-fg">2025-05-05 00:01:50,421 — DiffusionModel — INFO — Modelo de score inicializado correctamente</span>
+<span class="ansi-green-fg">2025-05-05 00:01:50,428 — DiffusionModel — INFO — Modelo cargado correctamente</span>
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DIGIT_CLASS</span> <span class="o">=</span> <span class="mi">5</span>
+
+<span class="c1"># Parámetros para generación</span>
+<span class="n">N_SAMPLES</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">N_STEPS</span> <span class="o">=</span> <span class="mi">2500</span>
+
+<span class="c1"># Crear tensor de condición para el dígito especificado</span>
+<span class="n">condition</span> <span class="o">=</span> <span class="p">[</span><span class="n">DIGIT_CLASS</span><span class="p">]</span><span class="o">*</span><span class="n">N_SAMPLES</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generando imágenes del dígito </span><span class="si">{</span><span class="n">DIGIT_CLASS</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+
+<span class="c1"># Generar imágenes</span>
+<span class="n">generated_images_ve_euler</span><span class="p">,</span> <span class="n">condition</span> <span class="o">=</span> <span class="n">diffusion_model_ve_euler</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+    <span class="n">n_samples</span><span class="o">=</span><span class="n">N_SAMPLES</span><span class="p">,</span>
+    <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span>
+    <span class="n">n_steps</span><span class="o">=</span><span class="n">N_STEPS</span>
+<span class="p">)</span>
+<span class="c1"># Mostrar imágenes generadas</span>
+<span class="n">show_images</span><span class="p">(</span><span class="n">generated_images_ve_euler</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Dígitos generados con VE: Euler Maruyama&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">condition</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:01:50,466 — DiffusionModel — INFO — Generando 12 muestras con 2500 pasos</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Generando imágenes del dígito 5...
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_pruebas_validacion_11_2.png" src="../_images/notebooks_pruebas_validacion_11_2.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Parámetros para generación</span>
+<span class="n">N_SAMPLES</span> <span class="o">=</span> <span class="mi">16</span>
+<span class="n">N_STEPS</span> <span class="o">=</span> <span class="mi">5000</span>
+
+<span class="c1"># Generar imágenes</span>
+<span class="n">generated_images_ve_euler</span><span class="p">,</span> <span class="n">condition</span> <span class="o">=</span> <span class="n">diffusion_model_ve_euler</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+    <span class="n">n_samples</span><span class="o">=</span><span class="n">N_SAMPLES</span><span class="p">,</span>
+    <span class="n">n_steps</span><span class="o">=</span><span class="n">N_STEPS</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Mostrar imágenes generadas</span>
+<span class="n">show_images</span><span class="p">(</span><span class="n">generated_images_ve_euler</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Dígitos generados con difusión&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">condition</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-yellow-fg">2025-05-05 00:02:21,368 — DiffusionModel — WARNING — No se proporcionó condición, se usará un tensor aleatorio de condición</span>
+<span class="ansi-green-fg">2025-05-05 00:02:21,371 — DiffusionModel — INFO — Generando 16 muestras con 5000 pasos</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_pruebas_validacion_12_1.png" src="../_images/notebooks_pruebas_validacion_12_1.png" />
+</div>
+</div>
+</section>
+<section id="Predictor---Corrector">
+<h3>Predictor - Corrector<a class="headerlink" href="#Predictor---Corrector" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Configurando el modelo de difusión...&quot;</span><span class="p">)</span>
+<span class="c1"># Crear modelo de difusión utilizando el ModelFactory</span>
+<span class="n">diffusion_model_ve_predictor</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">score_model_class</span><span class="o">=</span><span class="n">ScoreNet</span><span class="p">,</span>
+    <span class="n">is_conditional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">sde_name</span><span class="o">=</span><span class="s1">&#39;ve_sde&#39;</span><span class="p">,</span>
+    <span class="n">sampler_name</span><span class="o">=</span><span class="s2">&quot;predictor_corrector&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:03:11,973 — DiffusionModel — INFO — Modelo de difusión inicializado en dispositivo: cuda</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configurando el modelo de difusión...
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cargar un modelo pre-entrenado</span>
+<span class="n">diffusion_model_ve_predictor</span><span class="o">.</span><span class="n">load_score_model</span><span class="p">(</span><span class="s2">&quot;../checkpoints/ve_sde.pt&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:03:11,992 — DiffusionModel — INFO — Cargando modelo desde ../checkpoints/ve_sde.pt</span>
+<span class="ansi-green-fg">2025-05-05 00:03:12,025 — DiffusionModel — INFO — Forma de datos cargada: torch.Size([3, 28, 28])</span>
+<span class="ansi-green-fg">2025-05-05 00:03:12,026 — DiffusionModel — INFO — Parámetros del modelo actualizados desde checkpoint</span>
+<span class="ansi-green-fg">2025-05-05 00:03:12,068 — DiffusionModel — INFO — Modelo de score inicializado correctamente</span>
+<span class="ansi-green-fg">2025-05-05 00:03:12,073 — DiffusionModel — INFO — Modelo cargado correctamente</span>
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DIGIT_CLASS</span> <span class="o">=</span> <span class="mi">7</span>
+
+<span class="c1"># Parámetros para generación</span>
+<span class="n">N_SAMPLES</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">N_STEPS</span> <span class="o">=</span> <span class="mi">2000</span>
+
+<span class="c1"># Crear tensor de condición para el dígito especificado</span>
+<span class="n">condition</span> <span class="o">=</span> <span class="p">[</span><span class="n">DIGIT_CLASS</span><span class="p">]</span><span class="o">*</span><span class="n">N_SAMPLES</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generando imágenes del dígito </span><span class="si">{</span><span class="n">DIGIT_CLASS</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+
+<span class="c1"># Generar imágenes</span>
+<span class="n">generated_images_ve_predictor</span><span class="p">,</span> <span class="n">condition</span> <span class="o">=</span> <span class="n">diffusion_model_ve_predictor</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+    <span class="n">n_samples</span><span class="o">=</span><span class="n">N_SAMPLES</span><span class="p">,</span>
+    <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span>
+    <span class="n">n_steps</span><span class="o">=</span><span class="n">N_STEPS</span>
+<span class="p">)</span>
+<span class="c1"># Mostrar imágenes generadas</span>
+<span class="n">show_images</span><span class="p">(</span><span class="n">generated_images_ve_predictor</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Dígitos generados con VE: Predictor-Corrector&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">condition</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:03:12,107 — DiffusionModel — INFO — Generando 12 muestras con 2000 pasos</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Generando imágenes del dígito 7...
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_pruebas_validacion_16_2.png" src="../_images/notebooks_pruebas_validacion_16_2.png" />
+</div>
+</div>
+</section>
+<section id="Flow-ODE">
+<h3>Flow ODE<a class="headerlink" href="#Flow-ODE" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Configurando el modelo de difusión...&quot;</span><span class="p">)</span>
+<span class="c1"># Crear modelo de difusión utilizando el ModelFactory</span>
+<span class="n">diffusion_model_ve_flow_ode</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">score_model_class</span><span class="o">=</span><span class="n">ScoreNet</span><span class="p">,</span>
+    <span class="n">is_conditional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">sde_name</span><span class="o">=</span><span class="s1">&#39;ve_sde&#39;</span><span class="p">,</span>
+    <span class="n">sampler_name</span><span class="o">=</span><span class="s2">&quot;probability_flow_ode&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:06:01,995 — DiffusionModel — INFO — Modelo de difusión inicializado en dispositivo: cuda</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configurando el modelo de difusión...
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cargar un modelo pre-entrenado</span>
+<span class="n">diffusion_model_ve_flow_ode</span><span class="o">.</span><span class="n">load_score_model</span><span class="p">(</span><span class="s2">&quot;../checkpoints/ve_sde.pt&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:06:02,015 — DiffusionModel — INFO — Cargando modelo desde ../checkpoints/ve_sde.pt</span>
+<span class="ansi-green-fg">2025-05-05 00:06:02,051 — DiffusionModel — INFO — Forma de datos cargada: torch.Size([3, 28, 28])</span>
+<span class="ansi-green-fg">2025-05-05 00:06:02,053 — DiffusionModel — INFO — Parámetros del modelo actualizados desde checkpoint</span>
+<span class="ansi-green-fg">2025-05-05 00:06:02,108 — DiffusionModel — INFO — Modelo de score inicializado correctamente</span>
+<span class="ansi-green-fg">2025-05-05 00:06:02,114 — DiffusionModel — INFO — Modelo cargado correctamente</span>
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DIGIT_CLASS</span> <span class="o">=</span> <span class="mi">9</span>
+
+<span class="c1"># Parámetros para generación</span>
+<span class="n">N_SAMPLES</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">N_STEPS</span> <span class="o">=</span> <span class="mi">2000</span>
+
+<span class="c1"># Crear tensor de condición para el dígito especificado</span>
+<span class="n">condition</span> <span class="o">=</span> <span class="p">[</span><span class="n">DIGIT_CLASS</span><span class="p">]</span><span class="o">*</span><span class="n">N_SAMPLES</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generando imágenes del dígito </span><span class="si">{</span><span class="n">DIGIT_CLASS</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+
+<span class="c1"># Generar imágenes</span>
+<span class="n">generated_images_ve_flow_ode</span><span class="p">,</span> <span class="n">condition</span> <span class="o">=</span> <span class="n">diffusion_model_ve_flow_ode</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+    <span class="n">n_samples</span><span class="o">=</span><span class="n">N_SAMPLES</span><span class="p">,</span>
+    <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span>
+    <span class="n">n_steps</span><span class="o">=</span><span class="n">N_STEPS</span>
+<span class="p">)</span>
+<span class="c1"># Mostrar imágenes generadas</span>
+<span class="n">show_images</span><span class="p">(</span><span class="n">generated_images_ve_flow_ode</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Dígitos generados con VE: Flow ODE&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">condition</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:06:02,134 — DiffusionModel — INFO — Generando 12 muestras con 2000 pasos</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Generando imágenes del dígito 9...
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_pruebas_validacion_20_2.png" src="../_images/notebooks_pruebas_validacion_20_2.png" />
+</div>
+</div>
+</section>
+<section id="Exponential-Integrator">
+<h3>Exponential Integrator<a class="headerlink" href="#Exponential-Integrator" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Configurando el modelo de difusión...&quot;</span><span class="p">)</span>
+<span class="c1"># Crear modelo de difusión utilizando el ModelFactory</span>
+<span class="n">diffusion_model_ve_exponential</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">score_model_class</span><span class="o">=</span><span class="n">ScoreNet</span><span class="p">,</span>
+    <span class="n">is_conditional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">sde_name</span><span class="o">=</span><span class="s1">&#39;ve_sde&#39;</span><span class="p">,</span>
+    <span class="n">sampler_name</span><span class="o">=</span><span class="s2">&quot;exponential_integrator&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:06:32,712 — DiffusionModel — INFO — Modelo de difusión inicializado en dispositivo: cuda</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configurando el modelo de difusión...
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cargar un modelo pre-entrenado</span>
+<span class="n">diffusion_model_ve_exponential</span><span class="o">.</span><span class="n">load_score_model</span><span class="p">(</span><span class="s2">&quot;../checkpoints/ve_sde.pt&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:06:32,726 — DiffusionModel — INFO — Cargando modelo desde ../checkpoints/ve_sde.pt</span>
+<span class="ansi-green-fg">2025-05-05 00:06:32,745 — DiffusionModel — INFO — Forma de datos cargada: torch.Size([3, 28, 28])</span>
+<span class="ansi-green-fg">2025-05-05 00:06:32,746 — DiffusionModel — INFO — Parámetros del modelo actualizados desde checkpoint</span>
+<span class="ansi-green-fg">2025-05-05 00:06:32,787 — DiffusionModel — INFO — Modelo de score inicializado correctamente</span>
+<span class="ansi-green-fg">2025-05-05 00:06:32,793 — DiffusionModel — INFO — Modelo cargado correctamente</span>
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DIGIT_CLASS</span> <span class="o">=</span> <span class="mi">5</span>
+
+<span class="c1"># Parámetros para generación</span>
+<span class="n">N_SAMPLES</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">N_STEPS</span> <span class="o">=</span> <span class="mi">2000</span>
+
+<span class="c1"># Crear tensor de condición para el dígito especificado</span>
+<span class="n">condition</span> <span class="o">=</span> <span class="p">[</span><span class="n">DIGIT_CLASS</span><span class="p">]</span><span class="o">*</span><span class="n">N_SAMPLES</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generando imágenes del dígito </span><span class="si">{</span><span class="n">DIGIT_CLASS</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+
+<span class="c1"># Generar imágenes</span>
+<span class="n">generated_images_ve_exponential</span><span class="p">,</span> <span class="n">condition</span> <span class="o">=</span> <span class="n">diffusion_model_ve_exponential</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+    <span class="n">n_samples</span><span class="o">=</span><span class="n">N_SAMPLES</span><span class="p">,</span>
+    <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span>
+    <span class="n">n_steps</span><span class="o">=</span><span class="n">N_STEPS</span>
+<span class="p">)</span>
+<span class="c1"># Mostrar imágenes generadas</span>
+<span class="n">show_images</span><span class="p">(</span><span class="n">generated_images_ve_exponential</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Dígitos generados con VE: Exponential Integrator&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">condition</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:06:32,823 — DiffusionModel — INFO — Generando 12 muestras con 2000 pasos</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Generando imágenes del dígito 5...
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_pruebas_validacion_24_2.png" src="../_images/notebooks_pruebas_validacion_24_2.png" />
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="VP---Linear">
+<h2>VP - Linear<a class="headerlink" href="#VP---Linear" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Configurando el modelo de difusión...&quot;</span><span class="p">)</span>
+<span class="c1"># Crear modelo de difusión utilizando el ModelFactory</span>
+<span class="n">diffusion_model_vp_linear</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">score_model_class</span><span class="o">=</span><span class="n">ScoreNet</span><span class="p">,</span>
+    <span class="n">is_conditional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">sde_name</span><span class="o">=</span><span class="s1">&#39;vp_sde&#39;</span><span class="p">,</span>
+    <span class="n">sampler_name</span><span class="o">=</span><span class="s1">&#39;euler_maruyama&#39;</span><span class="p">,</span>
+    <span class="n">scheduler_name</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:06:49,885 — DiffusionModel — INFO — Modelo de difusión inicializado en dispositivo: cuda</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configurando el modelo de difusión...
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># N_EPOCHS = 32</span>
+<span class="c1"># print(f&quot;Entrenando el modelo por {N_EPOCHS} epochs...&quot;)</span>
+
+<span class="c1"># # Función para mostrar el progreso del entrenamiento</span>
+<span class="c1"># def training_callback(model, epoch, history):</span>
+<span class="c1">#     print(f&quot;Epoch {epoch+1}, Loss: {history[&#39;loss&#39;][-1]:.6f}&quot;)</span>
+
+<span class="c1"># # Entrenar el modelo</span>
+<span class="c1"># training_history = diffusion_model_vp_linear.train(</span>
+<span class="c1">#     dataloader=train_dataloader,</span>
+<span class="c1">#     n_epochs=N_EPOCHS,</span>
+<span class="c1">#     lr=LR,</span>
+<span class="c1">#     checkpoint_interval=CHECKPOINT_INTERVAL,</span>
+<span class="c1">#     callback=training_callback,</span>
+<span class="c1">#     model_file_name = &quot;vp_sde_linear&quot;</span>
+<span class="c1"># )</span>
+<span class="c1"># plot_training_history(training_history, title=&quot;Pérdida del modelo de difusión&quot;)</span>
+</pre></div>
+</div>
+</div>
+<section id="id1">
+<h3>Euler Maruyama<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Configurando el modelo de difusión...&quot;</span><span class="p">)</span>
+<span class="c1"># Crear modelo de difusión utilizando el ModelFactory</span>
+<span class="n">diffusion_model_vp_linear_euler</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">score_model_class</span><span class="o">=</span><span class="n">ScoreNet</span><span class="p">,</span>
+    <span class="n">is_conditional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">sde_name</span><span class="o">=</span><span class="s1">&#39;vp_sde&#39;</span><span class="p">,</span>
+    <span class="n">sampler_name</span><span class="o">=</span><span class="s1">&#39;euler_maruyama&#39;</span><span class="p">,</span>
+    <span class="n">scheduler_name</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:06:49,918 — DiffusionModel — INFO — Modelo de difusión inicializado en dispositivo: cuda</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configurando el modelo de difusión...
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cargar un modelo pre-entrenado</span>
+<span class="n">diffusion_model_vp_linear_euler</span><span class="o">.</span><span class="n">load_score_model</span><span class="p">(</span><span class="s2">&quot;../checkpoints/vp_sde_linear.pt&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:06:49,937 — DiffusionModel — INFO — Cargando modelo desde ../checkpoints/vp_sde_linear.pt</span>
+<span class="ansi-green-fg">2025-05-05 00:06:50,010 — DiffusionModel — INFO — Forma de datos cargada: torch.Size([3, 28, 28])</span>
+<span class="ansi-green-fg">2025-05-05 00:06:50,013 — DiffusionModel — INFO — Parámetros del modelo actualizados desde checkpoint</span>
+<span class="ansi-green-fg">2025-05-05 00:06:50,075 — DiffusionModel — INFO — Modelo de score inicializado correctamente</span>
+<span class="ansi-green-fg">2025-05-05 00:06:50,080 — DiffusionModel — INFO — Modelo cargado correctamente</span>
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DIGIT_CLASS</span> <span class="o">=</span> <span class="mi">8</span>
+
+<span class="c1"># Parámetros para generación</span>
+<span class="n">N_SAMPLES</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">N_STEPS</span> <span class="o">=</span> <span class="mi">2500</span>
+
+<span class="c1"># Crear tensor de condición para el dígito especificado</span>
+<span class="n">condition</span> <span class="o">=</span> <span class="p">[</span><span class="n">DIGIT_CLASS</span><span class="p">]</span><span class="o">*</span><span class="n">N_SAMPLES</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generando imágenes del dígito </span><span class="si">{</span><span class="n">DIGIT_CLASS</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+
+<span class="c1"># Generar imágenes</span>
+<span class="n">generated_images_vp_linear_euler</span><span class="p">,</span> <span class="n">condition</span> <span class="o">=</span> <span class="n">diffusion_model_vp_linear_euler</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+    <span class="n">n_samples</span><span class="o">=</span><span class="n">N_SAMPLES</span><span class="p">,</span>
+    <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span>
+    <span class="n">n_steps</span><span class="o">=</span><span class="n">N_STEPS</span>
+<span class="p">)</span>
+<span class="c1"># Mostrar imágenes generadas</span>
+<span class="n">show_images</span><span class="p">(</span><span class="n">generated_images_vp_linear_euler</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Dígitos generados con VP Linear: Euler-Maruyama&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">condition</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:06:50,101 — DiffusionModel — INFO — Generando 12 muestras con 2500 pasos</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Generando imágenes del dígito 8...
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_pruebas_validacion_31_2.png" src="../_images/notebooks_pruebas_validacion_31_2.png" />
+</div>
+</div>
+</section>
+<section id="Predictor-corrector">
+<h3>Predictor corrector<a class="headerlink" href="#Predictor-corrector" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Configurando el modelo de difusión...&quot;</span><span class="p">)</span>
+<span class="c1"># Crear modelo de difusión utilizando el ModelFactory</span>
+<span class="n">diffusion_model_vp_linear_predictor</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">score_model_class</span><span class="o">=</span><span class="n">ScoreNet</span><span class="p">,</span>
+    <span class="n">is_conditional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">sde_name</span><span class="o">=</span><span class="s1">&#39;vp_sde&#39;</span><span class="p">,</span>
+    <span class="n">sampler_name</span><span class="o">=</span><span class="s1">&#39;predictor_corrector&#39;</span><span class="p">,</span>
+    <span class="n">scheduler_name</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:07:07,679 — DiffusionModel — INFO — Modelo de difusión inicializado en dispositivo: cuda</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configurando el modelo de difusión...
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cargar un modelo pre-entrenado</span>
+<span class="n">diffusion_model_vp_linear_predictor</span><span class="o">.</span><span class="n">load_score_model</span><span class="p">(</span><span class="s2">&quot;../checkpoints/vp_sde_linear.pt&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:07:07,696 — DiffusionModel — INFO — Cargando modelo desde ../checkpoints/vp_sde_linear.pt</span>
+<span class="ansi-green-fg">2025-05-05 00:07:07,718 — DiffusionModel — INFO — Forma de datos cargada: torch.Size([3, 28, 28])</span>
+<span class="ansi-green-fg">2025-05-05 00:07:07,720 — DiffusionModel — INFO — Parámetros del modelo actualizados desde checkpoint</span>
+<span class="ansi-green-fg">2025-05-05 00:07:07,759 — DiffusionModel — INFO — Modelo de score inicializado correctamente</span>
+<span class="ansi-green-fg">2025-05-05 00:07:07,766 — DiffusionModel — INFO — Modelo cargado correctamente</span>
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DIGIT_CLASS</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="c1"># Parámetros para generación</span>
+<span class="n">N_SAMPLES</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">N_STEPS</span> <span class="o">=</span> <span class="mi">1000</span>
+
+<span class="c1"># Crear tensor de condición para el dígito especificado</span>
+<span class="n">condition</span> <span class="o">=</span> <span class="p">[</span><span class="n">DIGIT_CLASS</span><span class="p">]</span><span class="o">*</span><span class="n">N_SAMPLES</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generando imágenes del dígito </span><span class="si">{</span><span class="n">DIGIT_CLASS</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+
+<span class="c1"># Generar imágenes</span>
+<span class="n">generated_images_vp_linear_predictor</span><span class="p">,</span> <span class="n">condition</span> <span class="o">=</span> <span class="n">diffusion_model_vp_linear_predictor</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+    <span class="n">n_samples</span><span class="o">=</span><span class="n">N_SAMPLES</span><span class="p">,</span>
+    <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span>
+    <span class="n">n_steps</span><span class="o">=</span><span class="n">N_STEPS</span>
+<span class="p">)</span>
+<span class="c1"># Mostrar imágenes generadas</span>
+<span class="n">show_images</span><span class="p">(</span><span class="n">generated_images_vp_linear_predictor</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Dígitos generados con VP Linear: Predictor-Corrector&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">condition</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:07:07,795 — DiffusionModel — INFO — Generando 12 muestras con 1000 pasos</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Generando imágenes del dígito 3...
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_pruebas_validacion_35_2.png" src="../_images/notebooks_pruebas_validacion_35_2.png" />
+</div>
+</div>
+</section>
+<section id="id3">
+<h3>Flow ODE<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Configurando el modelo de difusión...&quot;</span><span class="p">)</span>
+<span class="c1"># Crear modelo de difusión utilizando el ModelFactory</span>
+<span class="n">diffusion_model_vp_linear_flow_ode</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">score_model_class</span><span class="o">=</span><span class="n">ScoreNet</span><span class="p">,</span>
+    <span class="n">is_conditional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">sde_name</span><span class="o">=</span><span class="s1">&#39;vp_sde&#39;</span><span class="p">,</span>
+    <span class="n">sde_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;coef_score&#39;</span><span class="p">:</span> <span class="mf">1.05</span><span class="p">},</span>
+    <span class="n">sampler_name</span><span class="o">=</span><span class="s1">&#39;probability_flow_ode&#39;</span><span class="p">,</span>
+    <span class="n">scheduler_name</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:12:14,550 — DiffusionModel — INFO — Modelo de difusión inicializado en dispositivo: cuda</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configurando el modelo de difusión...
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cargar un modelo pre-entrenado</span>
+<span class="n">diffusion_model_vp_linear_flow_ode</span><span class="o">.</span><span class="n">load_score_model</span><span class="p">(</span><span class="s2">&quot;../checkpoints/vp_sde_linear.pt&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:12:14,568 — DiffusionModel — INFO — Cargando modelo desde ../checkpoints/vp_sde_linear.pt</span>
+<span class="ansi-green-fg">2025-05-05 00:12:14,817 — DiffusionModel — INFO — Forma de datos cargada: torch.Size([3, 28, 28])</span>
+<span class="ansi-green-fg">2025-05-05 00:12:14,819 — DiffusionModel — INFO — Parámetros del modelo actualizados desde checkpoint</span>
+<span class="ansi-green-fg">2025-05-05 00:12:14,863 — DiffusionModel — INFO — Modelo de score inicializado correctamente</span>
+<span class="ansi-green-fg">2025-05-05 00:12:14,870 — DiffusionModel — INFO — Modelo cargado correctamente</span>
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DIGIT_CLASS</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="c1"># Parámetros para generación</span>
+<span class="n">N_SAMPLES</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">N_STEPS</span> <span class="o">=</span> <span class="mi">2500</span>
+
+<span class="c1"># Crear tensor de condición para el dígito especificado</span>
+<span class="n">condition</span> <span class="o">=</span> <span class="p">[</span><span class="n">DIGIT_CLASS</span><span class="p">]</span><span class="o">*</span><span class="n">N_SAMPLES</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generando imágenes del dígito </span><span class="si">{</span><span class="n">DIGIT_CLASS</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+
+<span class="c1"># Generar imágenes</span>
+<span class="n">generated_images_vp_flow_ode</span><span class="p">,</span> <span class="n">condition</span> <span class="o">=</span> <span class="n">diffusion_model_vp_linear_flow_ode</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+    <span class="n">n_samples</span><span class="o">=</span><span class="n">N_SAMPLES</span><span class="p">,</span>
+    <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span>
+    <span class="n">n_steps</span><span class="o">=</span><span class="n">N_STEPS</span>
+<span class="p">)</span>
+<span class="c1"># Mostrar imágenes generadas</span>
+<span class="n">show_images</span><span class="p">(</span><span class="n">generated_images_vp_flow_ode</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Dígitos generados con VP Linear: Flow ODE&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">condition</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:12:14,894 — DiffusionModel — INFO — Generando 12 muestras con 2500 pasos</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Generando imágenes del dígito 0...
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_pruebas_validacion_39_2.png" src="../_images/notebooks_pruebas_validacion_39_2.png" />
+</div>
+</div>
+</section>
+<section id="id4">
+<h3>Exponential Integrator<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Configurando el modelo de difusión...&quot;</span><span class="p">)</span>
+<span class="c1"># Crear modelo de difusión utilizando el ModelFactory</span>
+<span class="n">diffusion_model_vp_linear_exponential</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">score_model_class</span><span class="o">=</span><span class="n">ScoreNet</span><span class="p">,</span>
+    <span class="n">is_conditional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">sde_name</span><span class="o">=</span><span class="s1">&#39;vp_sde&#39;</span><span class="p">,</span>
+    <span class="n">sampler_name</span><span class="o">=</span><span class="s1">&#39;exponential_integrator&#39;</span><span class="p">,</span>
+    <span class="n">scheduler_name</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:12:47,523 — DiffusionModel — INFO — Modelo de difusión inicializado en dispositivo: cuda</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configurando el modelo de difusión...
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cargar un modelo pre-entrenado</span>
+<span class="n">diffusion_model_vp_linear_exponential</span><span class="o">.</span><span class="n">load_score_model</span><span class="p">(</span><span class="s2">&quot;../checkpoints/vp_sde_linear.pt&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:12:47,538 — DiffusionModel — INFO — Cargando modelo desde ../checkpoints/vp_sde_linear.pt</span>
+<span class="ansi-green-fg">2025-05-05 00:12:47,564 — DiffusionModel — INFO — Forma de datos cargada: torch.Size([3, 28, 28])</span>
+<span class="ansi-green-fg">2025-05-05 00:12:47,565 — DiffusionModel — INFO — Parámetros del modelo actualizados desde checkpoint</span>
+<span class="ansi-green-fg">2025-05-05 00:12:47,610 — DiffusionModel — INFO — Modelo de score inicializado correctamente</span>
+<span class="ansi-green-fg">2025-05-05 00:12:47,616 — DiffusionModel — INFO — Modelo cargado correctamente</span>
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DIGIT_CLASS</span> <span class="o">=</span> <span class="mi">4</span>
+
+<span class="c1"># Parámetros para generación</span>
+<span class="n">N_SAMPLES</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">N_STEPS</span> <span class="o">=</span> <span class="mi">2500</span>
+
+<span class="c1"># Crear tensor de condición para el dígito especificado</span>
+<span class="n">condition</span> <span class="o">=</span> <span class="p">[</span><span class="n">DIGIT_CLASS</span><span class="p">]</span><span class="o">*</span><span class="n">N_SAMPLES</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generando imágenes del dígito </span><span class="si">{</span><span class="n">DIGIT_CLASS</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+
+<span class="c1"># Generar imágenes</span>
+<span class="n">generated_images_vp_exponential_integrator</span><span class="p">,</span> <span class="n">condition</span> <span class="o">=</span> <span class="n">diffusion_model_vp_linear_exponential</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+    <span class="n">n_samples</span><span class="o">=</span><span class="n">N_SAMPLES</span><span class="p">,</span>
+    <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span>
+    <span class="n">n_steps</span><span class="o">=</span><span class="n">N_STEPS</span>
+<span class="p">)</span>
+<span class="c1"># Mostrar imágenes generadas</span>
+<span class="n">show_images</span><span class="p">(</span><span class="n">generated_images_vp_exponential_integrator</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Dígitos generados con VP Linear: Exponential Integrator&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">condition</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:12:47,644 — DiffusionModel — INFO — Generando 12 muestras con 2500 pasos</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Generando imágenes del dígito 4...
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_pruebas_validacion_43_2.png" src="../_images/notebooks_pruebas_validacion_43_2.png" />
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="VP---Cosine">
+<h2>VP - Cosine<a class="headerlink" href="#VP---Cosine" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Configurando el modelo de difusión...&quot;</span><span class="p">)</span>
+<span class="c1"># Crear modelo de difusión utilizando el ModelFactory</span>
+<span class="n">diffusion_model_vp_cosine</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">score_model_class</span><span class="o">=</span><span class="n">ScoreNet</span><span class="p">,</span>
+    <span class="n">is_conditional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">sde_name</span><span class="o">=</span><span class="s1">&#39;vp_sde&#39;</span><span class="p">,</span>
+    <span class="n">sampler_name</span><span class="o">=</span><span class="s1">&#39;euler_maruyama&#39;</span><span class="p">,</span>
+    <span class="n">scheduler_name</span><span class="o">=</span><span class="s1">&#39;cosine&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:13:05,903 — DiffusionModel — INFO — Modelo de difusión inicializado en dispositivo: cuda</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configurando el modelo de difusión...
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># N_EPOCHS = 34</span>
+<span class="c1"># print(f&quot;Entrenando el modelo por {N_EPOCHS} epochs...&quot;)</span>
+
+<span class="c1"># # Función para mostrar el progreso del entrenamiento</span>
+<span class="c1"># def training_callback(model, epoch, history):</span>
+<span class="c1">#     print(f&quot;Epoch {epoch+1}, Loss: {history[&#39;loss&#39;][-1]:.6f}&quot;)</span>
+
+<span class="c1"># # Entrenar el modelo</span>
+<span class="c1"># training_history = diffusion_model_vp_cosine.train(</span>
+<span class="c1">#     dataloader=train_dataloader,</span>
+<span class="c1">#     n_epochs=N_EPOCHS,</span>
+<span class="c1">#     lr=LR,</span>
+<span class="c1">#     checkpoint_interval=CHECKPOINT_INTERVAL,</span>
+<span class="c1">#     callback=training_callback,</span>
+<span class="c1">#     model_file_name = &quot;vp_sde_cosine&quot;</span>
+<span class="c1"># )</span>
+<span class="c1"># plot_training_history(training_history, title=&quot;Pérdida del modelo de difusión&quot;)</span>
+</pre></div>
+</div>
+</div>
+<section id="id5">
+<h3>Euler Maruyama<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Configurando el modelo de difusión...&quot;</span><span class="p">)</span>
+<span class="c1"># Crear modelo de difusión utilizando el ModelFactory</span>
+<span class="n">diffusion_model_vp_cosine_euler</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">score_model_class</span><span class="o">=</span><span class="n">ScoreNet</span><span class="p">,</span>
+    <span class="n">is_conditional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">sde_name</span><span class="o">=</span><span class="s1">&#39;vp_sde&#39;</span><span class="p">,</span>
+    <span class="n">sde_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;coef_beta&#39;</span><span class="p">:</span> <span class="mf">0.4</span><span class="p">,</span> <span class="s1">&#39;coef_score&#39;</span><span class="p">:</span> <span class="mf">1.2</span><span class="p">},</span>
+    <span class="n">sampler_name</span><span class="o">=</span><span class="s1">&#39;euler_maruyama&#39;</span><span class="p">,</span>
+    <span class="n">scheduler_name</span><span class="o">=</span><span class="s1">&#39;cosine&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:13:05,934 — DiffusionModel — INFO — Modelo de difusión inicializado en dispositivo: cuda</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configurando el modelo de difusión...
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cargar un modelo pre-entrenado</span>
+<span class="n">diffusion_model_vp_cosine_euler</span><span class="o">.</span><span class="n">load_score_model</span><span class="p">(</span><span class="s2">&quot;../checkpoints/vp_sde_cosine.pt&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:13:05,947 — DiffusionModel — INFO — Cargando modelo desde ../checkpoints/vp_sde_cosine.pt</span>
+<span class="ansi-green-fg">2025-05-05 00:13:06,001 — DiffusionModel — INFO — Forma de datos cargada: torch.Size([3, 28, 28])</span>
+<span class="ansi-green-fg">2025-05-05 00:13:06,002 — DiffusionModel — INFO — Parámetros del modelo actualizados desde checkpoint</span>
+<span class="ansi-green-fg">2025-05-05 00:13:06,066 — DiffusionModel — INFO — Modelo de score inicializado correctamente</span>
+<span class="ansi-green-fg">2025-05-05 00:13:06,074 — DiffusionModel — INFO — Modelo cargado correctamente</span>
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DIGIT_CLASS</span> <span class="o">=</span> <span class="mi">2</span>
+
+<span class="c1"># Parámetros para generación</span>
+<span class="n">N_SAMPLES</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">N_STEPS</span> <span class="o">=</span> <span class="mi">3000</span>
+
+<span class="c1"># Crear tensor de condición para el dígito especificado</span>
+<span class="n">condition</span> <span class="o">=</span> <span class="p">[</span><span class="n">DIGIT_CLASS</span><span class="p">]</span><span class="o">*</span><span class="n">N_SAMPLES</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generando imágenes del dígito </span><span class="si">{</span><span class="n">DIGIT_CLASS</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+
+<span class="c1"># Generar imágenes</span>
+<span class="n">generated_images_vp_cosine_euler</span><span class="p">,</span> <span class="n">condition</span> <span class="o">=</span> <span class="n">diffusion_model_vp_cosine_euler</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+    <span class="n">n_samples</span><span class="o">=</span><span class="n">N_SAMPLES</span><span class="p">,</span>
+    <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span>
+    <span class="n">n_steps</span><span class="o">=</span><span class="n">N_STEPS</span>
+<span class="p">)</span>
+<span class="c1"># Mostrar imágenes generadas</span>
+<span class="n">show_images</span><span class="p">(</span><span class="n">generated_images_vp_cosine_euler</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Dígitos generados con VP Cosine: Euler Maruyama&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">condition</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Generando imágenes del dígito 2...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:13:06,104 — DiffusionModel — INFO — Generando 12 muestras con 3000 pasos</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_pruebas_validacion_50_2.png" src="../_images/notebooks_pruebas_validacion_50_2.png" />
+</div>
+</div>
+</section>
+<section id="id6">
+<h3>Predictor - Corrector<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Configurando el modelo de difusión...&quot;</span><span class="p">)</span>
+<span class="c1"># Crear modelo de difusión utilizando el ModelFactory</span>
+<span class="n">diffusion_model_vp_cosine_predictor</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">score_model_class</span><span class="o">=</span><span class="n">ScoreNet</span><span class="p">,</span>
+    <span class="n">is_conditional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">sde_name</span><span class="o">=</span><span class="s1">&#39;vp_sde&#39;</span><span class="p">,</span>
+    <span class="n">sde_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;coef_beta&#39;</span><span class="p">:</span> <span class="mf">0.45</span><span class="p">,</span> <span class="s1">&#39;coef_score&#39;</span><span class="p">:</span> <span class="mf">1.1</span><span class="p">},</span>
+    <span class="n">sampler_name</span><span class="o">=</span><span class="s1">&#39;predictor_corrector&#39;</span><span class="p">,</span>
+    <span class="n">scheduler_name</span><span class="o">=</span><span class="s1">&#39;cosine&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:13:32,684 — DiffusionModel — INFO — Modelo de difusión inicializado en dispositivo: cuda</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configurando el modelo de difusión...
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cargar un modelo pre-entrenado</span>
+<span class="n">diffusion_model_vp_cosine_predictor</span><span class="o">.</span><span class="n">load_score_model</span><span class="p">(</span><span class="s2">&quot;../checkpoints/vp_sde_cosine.pt&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:13:32,701 — DiffusionModel — INFO — Cargando modelo desde ../checkpoints/vp_sde_cosine.pt</span>
+<span class="ansi-green-fg">2025-05-05 00:13:32,725 — DiffusionModel — INFO — Forma de datos cargada: torch.Size([3, 28, 28])</span>
+<span class="ansi-green-fg">2025-05-05 00:13:32,727 — DiffusionModel — INFO — Parámetros del modelo actualizados desde checkpoint</span>
+<span class="ansi-green-fg">2025-05-05 00:13:32,766 — DiffusionModel — INFO — Modelo de score inicializado correctamente</span>
+<span class="ansi-green-fg">2025-05-05 00:13:32,772 — DiffusionModel — INFO — Modelo cargado correctamente</span>
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DIGIT_CLASS</span> <span class="o">=</span> <span class="mi">6</span>
+
+<span class="c1"># Parámetros para generación</span>
+<span class="n">N_SAMPLES</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">N_STEPS</span> <span class="o">=</span> <span class="mi">1000</span>
+
+<span class="c1"># Crear tensor de condición para el dígito especificado</span>
+<span class="n">condition</span> <span class="o">=</span> <span class="p">[</span><span class="n">DIGIT_CLASS</span><span class="p">]</span><span class="o">*</span><span class="n">N_SAMPLES</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generando imágenes del dígito </span><span class="si">{</span><span class="n">DIGIT_CLASS</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+
+<span class="c1"># Generar imágenes</span>
+<span class="n">generated_images_vp_cosine_predictor</span><span class="p">,</span> <span class="n">condition</span> <span class="o">=</span> <span class="n">diffusion_model_vp_cosine_predictor</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+    <span class="n">n_samples</span><span class="o">=</span><span class="n">N_SAMPLES</span><span class="p">,</span>
+    <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span>
+    <span class="n">n_steps</span><span class="o">=</span><span class="n">N_STEPS</span>
+<span class="p">)</span>
+<span class="c1"># Mostrar imágenes generadas</span>
+<span class="n">show_images</span><span class="p">(</span><span class="n">generated_images_vp_cosine_predictor</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Dígitos generados con VP Cosine: Predictor-Corrector&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">condition</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:13:32,798 — DiffusionModel — INFO — Generando 12 muestras con 1000 pasos</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Generando imágenes del dígito 6...
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_pruebas_validacion_54_2.png" src="../_images/notebooks_pruebas_validacion_54_2.png" />
+</div>
+</div>
+</section>
+<section id="id7">
+<h3>Flow ODE<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Configurando el modelo de difusión...&quot;</span><span class="p">)</span>
+<span class="c1"># Crear modelo de difusión utilizando el ModelFactory</span>
+<span class="n">diffusion_model_vp_cosine_flow_ode</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">score_model_class</span><span class="o">=</span><span class="n">ScoreNet</span><span class="p">,</span>
+    <span class="n">is_conditional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">sde_name</span><span class="o">=</span><span class="s1">&#39;vp_sde&#39;</span><span class="p">,</span>
+    <span class="n">sde_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;coef_beta&#39;</span><span class="p">:</span> <span class="mf">0.45</span><span class="p">,</span> <span class="s1">&#39;coef_score&#39;</span><span class="p">:</span> <span class="mf">1.25</span><span class="p">},</span>
+    <span class="n">sampler_name</span><span class="o">=</span><span class="s1">&#39;probability_flow_ode&#39;</span><span class="p">,</span>
+    <span class="n">scheduler_name</span><span class="o">=</span><span class="s1">&#39;cosine&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:14:59,896 — DiffusionModel — INFO — Modelo de difusión inicializado en dispositivo: cuda</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configurando el modelo de difusión...
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cargar un modelo pre-entrenado</span>
+<span class="n">diffusion_model_vp_cosine_flow_ode</span><span class="o">.</span><span class="n">load_score_model</span><span class="p">(</span><span class="s2">&quot;../checkpoints/vp_sde_cosine.pt&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:14:59,912 — DiffusionModel — INFO — Cargando modelo desde ../checkpoints/vp_sde_cosine.pt</span>
+<span class="ansi-green-fg">2025-05-05 00:14:59,938 — DiffusionModel — INFO — Forma de datos cargada: torch.Size([3, 28, 28])</span>
+<span class="ansi-green-fg">2025-05-05 00:14:59,939 — DiffusionModel — INFO — Parámetros del modelo actualizados desde checkpoint</span>
+<span class="ansi-green-fg">2025-05-05 00:14:59,979 — DiffusionModel — INFO — Modelo de score inicializado correctamente</span>
+<span class="ansi-green-fg">2025-05-05 00:14:59,985 — DiffusionModel — INFO — Modelo cargado correctamente</span>
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DIGIT_CLASS</span> <span class="o">=</span> <span class="mi">9</span>
+
+<span class="c1"># Parámetros para generación</span>
+<span class="n">N_SAMPLES</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">N_STEPS</span> <span class="o">=</span> <span class="mi">1000</span>
+
+<span class="c1"># Crear tensor de condición para el dígito especificado</span>
+<span class="n">condition</span> <span class="o">=</span> <span class="p">[</span><span class="n">DIGIT_CLASS</span><span class="p">]</span><span class="o">*</span><span class="n">N_SAMPLES</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generando imágenes del dígito </span><span class="si">{</span><span class="n">DIGIT_CLASS</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+
+<span class="c1"># Generar imágenes</span>
+<span class="n">generated_images_vp_cosine_flow_ode</span><span class="p">,</span> <span class="n">condition</span> <span class="o">=</span> <span class="n">diffusion_model_vp_cosine_flow_ode</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+    <span class="n">n_samples</span><span class="o">=</span><span class="n">N_SAMPLES</span><span class="p">,</span>
+    <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span>
+    <span class="n">n_steps</span><span class="o">=</span><span class="n">N_STEPS</span>
+<span class="p">)</span>
+<span class="c1"># Mostrar imágenes generadas</span>
+<span class="n">show_images</span><span class="p">(</span><span class="n">generated_images_vp_cosine_flow_ode</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Dígitos generados con VP Cosine: Flow ODE&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">condition</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:15:00,008 — DiffusionModel — INFO — Generando 12 muestras con 1000 pasos</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Generando imágenes del dígito 9...
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_pruebas_validacion_58_2.png" src="../_images/notebooks_pruebas_validacion_58_2.png" />
+</div>
+</div>
+</section>
+<section id="id8">
+<h3>Exponential Integrator<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Configurando el modelo de difusión...&quot;</span><span class="p">)</span>
+<span class="c1"># Crear modelo de difusión utilizando el ModelFactory</span>
+<span class="n">diffusion_model_vp_cosine_exponential</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">score_model_class</span><span class="o">=</span><span class="n">ScoreNet</span><span class="p">,</span>
+    <span class="n">is_conditional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">sde_name</span><span class="o">=</span><span class="s1">&#39;vp_sde&#39;</span><span class="p">,</span>
+    <span class="n">sde_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;coef_beta&#39;</span><span class="p">:</span> <span class="mf">0.45</span><span class="p">,</span> <span class="s1">&#39;coef_score&#39;</span><span class="p">:</span> <span class="mf">1.1</span><span class="p">},</span>
+    <span class="n">sampler_name</span><span class="o">=</span><span class="s1">&#39;exponential_integrator&#39;</span><span class="p">,</span>
+    <span class="n">scheduler_name</span><span class="o">=</span><span class="s1">&#39;cosine&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:15:16,697 — DiffusionModel — INFO — Modelo de difusión inicializado en dispositivo: cuda</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configurando el modelo de difusión...
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cargar un modelo pre-entrenado</span>
+<span class="n">diffusion_model_vp_cosine_exponential</span><span class="o">.</span><span class="n">load_score_model</span><span class="p">(</span><span class="s2">&quot;../checkpoints/vp_sde_cosine.pt&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:15:16,711 — DiffusionModel — INFO — Cargando modelo desde ../checkpoints/vp_sde_cosine.pt</span>
+<span class="ansi-green-fg">2025-05-05 00:15:16,732 — DiffusionModel — INFO — Forma de datos cargada: torch.Size([3, 28, 28])</span>
+<span class="ansi-green-fg">2025-05-05 00:15:16,733 — DiffusionModel — INFO — Parámetros del modelo actualizados desde checkpoint</span>
+<span class="ansi-green-fg">2025-05-05 00:15:16,772 — DiffusionModel — INFO — Modelo de score inicializado correctamente</span>
+<span class="ansi-green-fg">2025-05-05 00:15:16,780 — DiffusionModel — INFO — Modelo cargado correctamente</span>
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DIGIT_CLASS</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="c1"># Parámetros para generación</span>
+<span class="n">N_SAMPLES</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">N_STEPS</span> <span class="o">=</span> <span class="mi">3000</span>
+
+<span class="c1"># Crear tensor de condición para el dígito especificado</span>
+<span class="n">condition</span> <span class="o">=</span> <span class="p">[</span><span class="n">DIGIT_CLASS</span><span class="p">]</span><span class="o">*</span><span class="n">N_SAMPLES</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generando imágenes del dígito </span><span class="si">{</span><span class="n">DIGIT_CLASS</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+
+<span class="c1"># Generar imágenes</span>
+<span class="n">generated_images_vp_cosine_exponential</span><span class="p">,</span> <span class="n">condition</span> <span class="o">=</span> <span class="n">diffusion_model_vp_cosine_exponential</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+    <span class="n">n_samples</span><span class="o">=</span><span class="n">N_SAMPLES</span><span class="p">,</span>
+    <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span>
+    <span class="n">n_steps</span><span class="o">=</span><span class="n">N_STEPS</span>
+<span class="p">)</span>
+<span class="c1"># Mostrar imágenes generadas</span>
+<span class="n">show_images</span><span class="p">(</span><span class="n">generated_images_vp_cosine_exponential</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Dígitos generados con VP Cosine: Exponential Integrator&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">condition</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:15:16,804 — DiffusionModel — INFO — Generando 12 muestras con 3000 pasos</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Generando imágenes del dígito 3...
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_pruebas_validacion_62_2.png" src="../_images/notebooks_pruebas_validacion_62_2.png" />
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="SubVP---Linear">
+<h2>SubVP - Linear<a class="headerlink" href="#SubVP---Linear" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Configurando el modelo de difusión...&quot;</span><span class="p">)</span>
+<span class="c1"># Crear modelo de difusión utilizando el ModelFactory</span>
+<span class="n">diffusion_model_subvp_linear</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">score_model_class</span><span class="o">=</span><span class="n">ScoreNet</span><span class="p">,</span>
+    <span class="n">is_conditional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">sde_name</span><span class="o">=</span><span class="s1">&#39;subvp_sde&#39;</span><span class="p">,</span>
+    <span class="n">sampler_name</span><span class="o">=</span><span class="s1">&#39;euler_maruyama&#39;</span><span class="p">,</span>
+    <span class="n">scheduler_name</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:15:44,445 — DiffusionModel — INFO — Modelo de difusión inicializado en dispositivo: cuda</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configurando el modelo de difusión...
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># N_EPOCHS = 34</span>
+<span class="c1"># print(f&quot;Entrenando el modelo por {N_EPOCHS} epochs...&quot;)</span>
+
+<span class="c1"># # Función para mostrar el progreso del entrenamiento</span>
+<span class="c1"># def training_callback(model, epoch, history):</span>
+<span class="c1">#     print(f&quot;Epoch {epoch+1}, Loss: {history[&#39;loss&#39;][-1]:.6f}&quot;)</span>
+
+<span class="c1"># # Entrenar el modelo</span>
+<span class="c1"># training_history = diffusion_model_subvp_linear.train(</span>
+<span class="c1">#     dataloader=train_dataloader,</span>
+<span class="c1">#     n_epochs=N_EPOCHS,</span>
+<span class="c1">#     lr=LR,</span>
+<span class="c1">#     checkpoint_interval=CHECKPOINT_INTERVAL,</span>
+<span class="c1">#     callback=training_callback,</span>
+<span class="c1">#     model_file_name = &quot;subvp_sde_linear&quot;</span>
+<span class="c1"># )</span>
+<span class="c1"># plot_training_history(training_history, title=&quot;Pérdida del modelo de difusión&quot;)</span>
+</pre></div>
+</div>
+</div>
+<section id="id9">
+<h3>Euler Maruyama<a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Configurando el modelo de difusión...&quot;</span><span class="p">)</span>
+<span class="c1"># Crear modelo de difusión utilizando el ModelFactory</span>
+<span class="n">diffusion_model_subvp_linear_euler</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">score_model_class</span><span class="o">=</span><span class="n">ScoreNet</span><span class="p">,</span>
+    <span class="n">is_conditional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">sde_name</span><span class="o">=</span><span class="s1">&#39;subvp_sde&#39;</span><span class="p">,</span>
+    <span class="n">sde_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;coef_score&#39;</span><span class="p">:</span> <span class="mf">1.22</span><span class="p">},</span>
+    <span class="n">sampler_name</span><span class="o">=</span><span class="s1">&#39;euler_maruyama&#39;</span><span class="p">,</span>
+    <span class="n">scheduler_name</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:15:44,475 — DiffusionModel — INFO — Modelo de difusión inicializado en dispositivo: cuda</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configurando el modelo de difusión...
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cargar un modelo pre-entrenado</span>
+<span class="n">diffusion_model_subvp_linear_euler</span><span class="o">.</span><span class="n">load_score_model</span><span class="p">(</span><span class="s2">&quot;../checkpoints/subvp_sde_linear.pt&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:15:44,491 — DiffusionModel — INFO — Cargando modelo desde ../checkpoints/subvp_sde_linear.pt</span>
+<span class="ansi-green-fg">2025-05-05 00:15:44,546 — DiffusionModel — INFO — Forma de datos cargada: torch.Size([3, 28, 28])</span>
+<span class="ansi-green-fg">2025-05-05 00:15:44,548 — DiffusionModel — INFO — Parámetros del modelo actualizados desde checkpoint</span>
+<span class="ansi-green-fg">2025-05-05 00:15:44,606 — DiffusionModel — INFO — Modelo de score inicializado correctamente</span>
+<span class="ansi-green-fg">2025-05-05 00:15:44,613 — DiffusionModel — INFO — Modelo cargado correctamente</span>
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DIGIT_CLASS</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="c1"># Parámetros para generación</span>
+<span class="n">N_SAMPLES</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">N_STEPS</span> <span class="o">=</span> <span class="mi">2000</span>
+
+<span class="c1"># Crear tensor de condición para el dígito especificado</span>
+<span class="n">condition</span> <span class="o">=</span> <span class="p">[</span><span class="n">DIGIT_CLASS</span><span class="p">]</span><span class="o">*</span><span class="n">N_SAMPLES</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generando imágenes del dígito </span><span class="si">{</span><span class="n">DIGIT_CLASS</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+
+<span class="c1"># Generar imágenes</span>
+<span class="n">generated_images_subvp_linear_euler</span><span class="p">,</span> <span class="n">condition</span> <span class="o">=</span> <span class="n">diffusion_model_subvp_linear_euler</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+    <span class="n">n_samples</span><span class="o">=</span><span class="n">N_SAMPLES</span><span class="p">,</span>
+    <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span>
+    <span class="n">n_steps</span><span class="o">=</span><span class="n">N_STEPS</span>
+<span class="p">)</span>
+<span class="c1"># Mostrar imágenes generadas</span>
+<span class="n">show_images</span><span class="p">(</span><span class="n">generated_images_subvp_linear_euler</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Dígitos generados con SubVP Linear: Euler Maruyama&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">condition</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Generando imágenes del dígito 0...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:15:44,650 — DiffusionModel — INFO — Generando 12 muestras con 2000 pasos</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_pruebas_validacion_69_2.png" src="../_images/notebooks_pruebas_validacion_69_2.png" />
+</div>
+</div>
+</section>
+<section id="id10">
+<h3>Predictor - Corrector<a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Configurando el modelo de difusión...&quot;</span><span class="p">)</span>
+<span class="c1"># Crear modelo de difusión utilizando el ModelFactory</span>
+<span class="n">diffusion_model_subvp_linear_predictor</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">score_model_class</span><span class="o">=</span><span class="n">ScoreNet</span><span class="p">,</span>
+    <span class="n">is_conditional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">sde_name</span><span class="o">=</span><span class="s1">&#39;subvp_sde&#39;</span><span class="p">,</span>
+    <span class="n">sde_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;coef_beta&#39;</span><span class="p">:</span> <span class="mf">0.45</span><span class="p">,</span> <span class="s1">&#39;coef_score&#39;</span><span class="p">:</span> <span class="mf">1.1</span><span class="p">},</span>
+    <span class="n">sampler_name</span><span class="o">=</span><span class="s1">&#39;predictor_corrector&#39;</span><span class="p">,</span>
+    <span class="n">scheduler_name</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:18:26,424 — DiffusionModel — INFO — Modelo de difusión inicializado en dispositivo: cuda</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configurando el modelo de difusión...
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cargar un modelo pre-entrenado</span>
+<span class="n">diffusion_model_subvp_linear_predictor</span><span class="o">.</span><span class="n">load_score_model</span><span class="p">(</span><span class="s2">&quot;../checkpoints/subvp_sde_linear.pt&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:18:26,440 — DiffusionModel — INFO — Cargando modelo desde ../checkpoints/subvp_sde_linear.pt</span>
+<span class="ansi-green-fg">2025-05-05 00:18:26,642 — DiffusionModel — INFO — Forma de datos cargada: torch.Size([3, 28, 28])</span>
+<span class="ansi-green-fg">2025-05-05 00:18:26,644 — DiffusionModel — INFO — Parámetros del modelo actualizados desde checkpoint</span>
+<span class="ansi-green-fg">2025-05-05 00:18:26,688 — DiffusionModel — INFO — Modelo de score inicializado correctamente</span>
+<span class="ansi-green-fg">2025-05-05 00:18:26,692 — DiffusionModel — INFO — Modelo cargado correctamente</span>
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DIGIT_CLASS</span> <span class="o">=</span> <span class="mi">7</span>
+
+<span class="c1"># Parámetros para generación</span>
+<span class="n">N_SAMPLES</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">N_STEPS</span> <span class="o">=</span> <span class="mi">2500</span>
+
+<span class="c1"># Crear tensor de condición para el dígito especificado</span>
+<span class="n">condition</span> <span class="o">=</span> <span class="p">[</span><span class="n">DIGIT_CLASS</span><span class="p">]</span><span class="o">*</span><span class="n">N_SAMPLES</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generando imágenes del dígito </span><span class="si">{</span><span class="n">DIGIT_CLASS</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+
+<span class="c1"># Generar imágenes</span>
+<span class="n">generated_images_subvp_linear_predictor</span><span class="p">,</span> <span class="n">condition</span> <span class="o">=</span> <span class="n">diffusion_model_subvp_linear_predictor</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+    <span class="n">n_samples</span><span class="o">=</span><span class="n">N_SAMPLES</span><span class="p">,</span>
+    <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span>
+    <span class="n">n_steps</span><span class="o">=</span><span class="n">N_STEPS</span>
+<span class="p">)</span>
+<span class="c1"># Mostrar imágenes generadas</span>
+<span class="n">show_images</span><span class="p">(</span><span class="n">generated_images_subvp_linear_predictor</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Dígitos generados con SubVP Linear: Predictor-Corrector&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">condition</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:18:26,717 — DiffusionModel — INFO — Generando 12 muestras con 2500 pasos</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Generando imágenes del dígito 7...
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_pruebas_validacion_73_2.png" src="../_images/notebooks_pruebas_validacion_73_2.png" />
+</div>
+</div>
+</section>
+<section id="id11">
+<h3>Flow ODE<a class="headerlink" href="#id11" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Configurando el modelo de difusión...&quot;</span><span class="p">)</span>
+<span class="c1"># Crear modelo de difusión utilizando el ModelFactory</span>
+<span class="n">diffusion_model_subvp_linear_flow_ode</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">score_model_class</span><span class="o">=</span><span class="n">ScoreNet</span><span class="p">,</span>
+    <span class="n">is_conditional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">sde_name</span><span class="o">=</span><span class="s1">&#39;subvp_sde&#39;</span><span class="p">,</span>
+    <span class="n">sde_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;coef_beta&#39;</span><span class="p">:</span> <span class="mf">0.45</span><span class="p">,</span> <span class="s1">&#39;coef_score&#39;</span><span class="p">:</span> <span class="mf">1.05</span><span class="p">},</span>
+    <span class="n">sampler_name</span><span class="o">=</span><span class="s1">&#39;probability_flow_ode&#39;</span><span class="p">,</span>
+    <span class="n">scheduler_name</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:21:20,544 — DiffusionModel — INFO — Modelo de difusión inicializado en dispositivo: cuda</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configurando el modelo de difusión...
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cargar un modelo pre-entrenado</span>
+<span class="n">diffusion_model_subvp_linear_flow_ode</span><span class="o">.</span><span class="n">load_score_model</span><span class="p">(</span><span class="s2">&quot;../checkpoints/subvp_sde_linear.pt&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:21:20,575 — DiffusionModel — INFO — Cargando modelo desde ../checkpoints/subvp_sde_linear.pt</span>
+<span class="ansi-green-fg">2025-05-05 00:21:20,624 — DiffusionModel — INFO — Forma de datos cargada: torch.Size([3, 28, 28])</span>
+<span class="ansi-green-fg">2025-05-05 00:21:20,626 — DiffusionModel — INFO — Parámetros del modelo actualizados desde checkpoint</span>
+<span class="ansi-green-fg">2025-05-05 00:21:20,685 — DiffusionModel — INFO — Modelo de score inicializado correctamente</span>
+<span class="ansi-green-fg">2025-05-05 00:21:20,697 — DiffusionModel — INFO — Modelo cargado correctamente</span>
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DIGIT_CLASS</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="c1"># Parámetros para generación</span>
+<span class="n">N_SAMPLES</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">N_STEPS</span> <span class="o">=</span> <span class="mi">2500</span>
+
+<span class="c1"># Crear tensor de condición para el dígito especificado</span>
+<span class="n">condition</span> <span class="o">=</span> <span class="p">[</span><span class="n">DIGIT_CLASS</span><span class="p">]</span><span class="o">*</span><span class="n">N_SAMPLES</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generando imágenes del dígito </span><span class="si">{</span><span class="n">DIGIT_CLASS</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+
+<span class="c1"># Generar imágenes</span>
+<span class="n">generated_images_subvp_linear_flow_ode</span><span class="p">,</span> <span class="n">condition</span> <span class="o">=</span> <span class="n">diffusion_model_subvp_linear_flow_ode</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+    <span class="n">n_samples</span><span class="o">=</span><span class="n">N_SAMPLES</span><span class="p">,</span>
+    <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span>
+    <span class="n">n_steps</span><span class="o">=</span><span class="n">N_STEPS</span>
+<span class="p">)</span>
+<span class="c1"># Mostrar imágenes generadas</span>
+<span class="n">show_images</span><span class="p">(</span><span class="n">generated_images_subvp_linear_flow_ode</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Dígitos generados con SubVP Linear: Flow ODE&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">condition</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:21:20,733 — DiffusionModel — INFO — Generando 12 muestras con 2500 pasos</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Generando imágenes del dígito 0...
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_pruebas_validacion_77_2.png" src="../_images/notebooks_pruebas_validacion_77_2.png" />
+</div>
+</div>
+</section>
+<section id="id12">
+<h3>Exponential Integrator<a class="headerlink" href="#id12" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Configurando el modelo de difusión...&quot;</span><span class="p">)</span>
+<span class="c1"># Crear modelo de difusión utilizando el ModelFactory</span>
+<span class="n">diffusion_model_subvp_linear_exponential</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">score_model_class</span><span class="o">=</span><span class="n">ScoreNet</span><span class="p">,</span>
+    <span class="n">is_conditional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">sde_name</span><span class="o">=</span><span class="s1">&#39;subvp_sde&#39;</span><span class="p">,</span>
+    <span class="n">sde_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;coef_beta&#39;</span><span class="p">:</span> <span class="mf">0.45</span><span class="p">,</span> <span class="s1">&#39;coef_score&#39;</span><span class="p">:</span> <span class="mf">1.1</span><span class="p">},</span>
+    <span class="n">sampler_name</span><span class="o">=</span><span class="s1">&#39;exponential_integrator&#39;</span><span class="p">,</span>
+    <span class="n">scheduler_name</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:21:53,693 — DiffusionModel — INFO — Modelo de difusión inicializado en dispositivo: cuda</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configurando el modelo de difusión...
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cargar un modelo pre-entrenado</span>
+<span class="n">diffusion_model_subvp_linear_exponential</span><span class="o">.</span><span class="n">load_score_model</span><span class="p">(</span><span class="s2">&quot;../checkpoints/subvp_sde_linear.pt&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:21:53,708 — DiffusionModel — INFO — Cargando modelo desde ../checkpoints/subvp_sde_linear.pt</span>
+<span class="ansi-green-fg">2025-05-05 00:21:53,728 — DiffusionModel — INFO — Forma de datos cargada: torch.Size([3, 28, 28])</span>
+<span class="ansi-green-fg">2025-05-05 00:21:53,729 — DiffusionModel — INFO — Parámetros del modelo actualizados desde checkpoint</span>
+<span class="ansi-green-fg">2025-05-05 00:21:53,765 — DiffusionModel — INFO — Modelo de score inicializado correctamente</span>
+<span class="ansi-green-fg">2025-05-05 00:21:53,772 — DiffusionModel — INFO — Modelo cargado correctamente</span>
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DIGIT_CLASS</span> <span class="o">=</span> <span class="mi">4</span>
+
+<span class="c1"># Parámetros para generación</span>
+<span class="n">N_SAMPLES</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">N_STEPS</span> <span class="o">=</span> <span class="mi">2500</span>
+
+<span class="c1"># Crear tensor de condición para el dígito especificado</span>
+<span class="n">condition</span> <span class="o">=</span> <span class="p">[</span><span class="n">DIGIT_CLASS</span><span class="p">]</span><span class="o">*</span><span class="n">N_SAMPLES</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generando imágenes del dígito </span><span class="si">{</span><span class="n">DIGIT_CLASS</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+
+<span class="c1"># Generar imágenes</span>
+<span class="n">generated_images_subvp_linear_exponential</span><span class="p">,</span> <span class="n">condition</span> <span class="o">=</span> <span class="n">diffusion_model_subvp_linear_exponential</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+    <span class="n">n_samples</span><span class="o">=</span><span class="n">N_SAMPLES</span><span class="p">,</span>
+    <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span>
+    <span class="n">n_steps</span><span class="o">=</span><span class="n">N_STEPS</span>
+<span class="p">)</span>
+<span class="c1"># Mostrar imágenes generadas</span>
+<span class="n">show_images</span><span class="p">(</span><span class="n">generated_images_subvp_linear_exponential</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Dígitos generados con SubVP Linear: Exponential Integrator&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">condition</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:21:53,792 — DiffusionModel — INFO — Generando 12 muestras con 2500 pasos</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Generando imágenes del dígito 4...
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_pruebas_validacion_81_2.png" src="../_images/notebooks_pruebas_validacion_81_2.png" />
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="SubVP---Cosine">
+<h2>SubVP - Cosine<a class="headerlink" href="#SubVP---Cosine" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Configurando el modelo de difusión...&quot;</span><span class="p">)</span>
+<span class="c1"># Crear modelo de difusión utilizando el ModelFactory</span>
+<span class="n">diffusion_model_subvp_cosine</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">score_model_class</span><span class="o">=</span><span class="n">ScoreNet</span><span class="p">,</span>
+    <span class="n">is_conditional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">sde_name</span><span class="o">=</span><span class="s1">&#39;subvp_sde&#39;</span><span class="p">,</span>
+    <span class="n">sampler_name</span><span class="o">=</span><span class="s1">&#39;euler_maruyama&#39;</span><span class="p">,</span>
+    <span class="n">scheduler_name</span><span class="o">=</span><span class="s1">&#39;cosine&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:22:14,362 — DiffusionModel — INFO — Modelo de difusión inicializado en dispositivo: cuda</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configurando el modelo de difusión...
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># N_EPOCHS = 38</span>
+<span class="c1"># print(f&quot;Entrenando el modelo por {N_EPOCHS} epochs...&quot;)</span>
+
+<span class="c1"># # Función para mostrar el progreso del entrenamiento</span>
+<span class="c1"># def training_callback(model, epoch, history):</span>
+<span class="c1">#     print(f&quot;Epoch {epoch+1}, Loss: {history[&#39;loss&#39;][-1]:.6f}&quot;)</span>
+
+<span class="c1"># # Entrenar el modelo</span>
+<span class="c1"># training_history = diffusion_model_subvp_cosine.train(</span>
+<span class="c1">#     dataloader=train_dataloader,</span>
+<span class="c1">#     n_epochs=N_EPOCHS,</span>
+<span class="c1">#     lr=LR,</span>
+<span class="c1">#     checkpoint_interval=CHECKPOINT_INTERVAL,</span>
+<span class="c1">#     callback=training_callback,</span>
+<span class="c1">#     model_file_name = &quot;subvp_sde_cosine&quot;</span>
+<span class="c1"># )</span>
+<span class="c1"># plot_training_history(training_history, title=&quot;Pérdida del modelo de difusión&quot;)</span>
+</pre></div>
+</div>
+</div>
+<section id="id13">
+<h3>Euler Maruyama<a class="headerlink" href="#id13" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Configurando el modelo de difusión...&quot;</span><span class="p">)</span>
+<span class="c1"># Crear modelo de difusión utilizando el ModelFactory</span>
+<span class="n">diffusion_model_subvp_cosine_euler</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">score_model_class</span><span class="o">=</span><span class="n">ScoreNet</span><span class="p">,</span>
+    <span class="n">is_conditional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">sde_name</span><span class="o">=</span><span class="s1">&#39;subvp_sde&#39;</span><span class="p">,</span>
+    <span class="n">sde_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;coef_beta&#39;</span><span class="p">:</span> <span class="mf">0.52</span><span class="p">,</span> <span class="s1">&#39;coef_score&#39;</span><span class="p">:</span> <span class="mf">1.32</span><span class="p">},</span>
+    <span class="n">sampler_name</span><span class="o">=</span><span class="s1">&#39;euler_maruyama&#39;</span><span class="p">,</span>
+    <span class="n">scheduler_name</span><span class="o">=</span><span class="s1">&#39;cosine&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:22:14,390 — DiffusionModel — INFO — Modelo de difusión inicializado en dispositivo: cuda</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configurando el modelo de difusión...
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cargar un modelo pre-entrenado</span>
+<span class="n">diffusion_model_subvp_cosine_euler</span><span class="o">.</span><span class="n">load_score_model</span><span class="p">(</span><span class="s2">&quot;../checkpoints/subvp_sde_cosine.pt&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:22:14,404 — DiffusionModel — INFO — Cargando modelo desde ../checkpoints/subvp_sde_cosine.pt</span>
+<span class="ansi-green-fg">2025-05-05 00:22:14,477 — DiffusionModel — INFO — Forma de datos cargada: torch.Size([3, 28, 28])</span>
+<span class="ansi-green-fg">2025-05-05 00:22:14,488 — DiffusionModel — INFO — Parámetros del modelo actualizados desde checkpoint</span>
+<span class="ansi-green-fg">2025-05-05 00:22:14,550 — DiffusionModel — INFO — Modelo de score inicializado correctamente</span>
+<span class="ansi-green-fg">2025-05-05 00:22:14,557 — DiffusionModel — INFO — Modelo cargado correctamente</span>
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DIGIT_CLASS</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="c1"># Parámetros para generación</span>
+<span class="n">N_SAMPLES</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">N_STEPS</span> <span class="o">=</span> <span class="mi">2000</span>
+
+<span class="c1"># Crear tensor de condición para el dígito especificado</span>
+<span class="n">condition</span> <span class="o">=</span> <span class="p">[</span><span class="n">DIGIT_CLASS</span><span class="p">]</span><span class="o">*</span><span class="n">N_SAMPLES</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generando imágenes del dígito </span><span class="si">{</span><span class="n">DIGIT_CLASS</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+
+<span class="c1"># Generar imágenes</span>
+<span class="n">generated_images_subvp_cosine_euler</span><span class="p">,</span> <span class="n">condition</span> <span class="o">=</span> <span class="n">diffusion_model_subvp_cosine_euler</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+    <span class="n">n_samples</span><span class="o">=</span><span class="n">N_SAMPLES</span><span class="p">,</span>
+    <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span>
+    <span class="n">n_steps</span><span class="o">=</span><span class="n">N_STEPS</span>
+<span class="p">)</span>
+<span class="c1"># Mostrar imágenes generadas</span>
+<span class="n">show_images</span><span class="p">(</span><span class="n">generated_images_subvp_cosine_euler</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Dígitos generados con SubVP Cosine: Euler Maruyama&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">condition</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Generando imágenes del dígito 1...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:22:14,593 — DiffusionModel — INFO — Generando 12 muestras con 2000 pasos</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_pruebas_validacion_88_3.png" src="../_images/notebooks_pruebas_validacion_88_3.png" />
+</div>
+</div>
+</section>
+<section id="Predictor---corrector">
+<h3>Predictor - corrector<a class="headerlink" href="#Predictor---corrector" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Configurando el modelo de difusión...&quot;</span><span class="p">)</span>
+<span class="c1"># Crear modelo de difusión utilizando el ModelFactory</span>
+<span class="n">diffusion_model_subvp_cosine_predictor</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">score_model_class</span><span class="o">=</span><span class="n">ScoreNet</span><span class="p">,</span>
+    <span class="n">is_conditional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">sde_name</span><span class="o">=</span><span class="s1">&#39;subvp_sde&#39;</span><span class="p">,</span>
+    <span class="n">sde_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;coef_score&#39;</span><span class="p">:</span> <span class="mf">1.05</span><span class="p">},</span>
+    <span class="n">sampler_name</span><span class="o">=</span><span class="s1">&#39;predictor_corrector&#39;</span><span class="p">,</span>
+    <span class="n">scheduler_name</span><span class="o">=</span><span class="s1">&#39;cosine&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:22:33,756 — DiffusionModel — INFO — Modelo de difusión inicializado en dispositivo: cuda</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configurando el modelo de difusión...
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cargar un modelo pre-entrenado</span>
+<span class="n">diffusion_model_subvp_cosine_predictor</span><span class="o">.</span><span class="n">load_score_model</span><span class="p">(</span><span class="s2">&quot;../checkpoints/subvp_sde_cosine.pt&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:22:33,770 — DiffusionModel — INFO — Cargando modelo desde ../checkpoints/subvp_sde_cosine.pt</span>
+<span class="ansi-green-fg">2025-05-05 00:22:33,792 — DiffusionModel — INFO — Forma de datos cargada: torch.Size([3, 28, 28])</span>
+<span class="ansi-green-fg">2025-05-05 00:22:33,793 — DiffusionModel — INFO — Parámetros del modelo actualizados desde checkpoint</span>
+<span class="ansi-green-fg">2025-05-05 00:22:33,829 — DiffusionModel — INFO — Modelo de score inicializado correctamente</span>
+<span class="ansi-green-fg">2025-05-05 00:22:33,838 — DiffusionModel — INFO — Modelo cargado correctamente</span>
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DIGIT_CLASS</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="c1"># Parámetros para generación</span>
+<span class="n">N_SAMPLES</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">N_STEPS</span> <span class="o">=</span> <span class="mi">2000</span>
+
+<span class="c1"># Crear tensor de condición para el dígito especificado</span>
+<span class="n">condition</span> <span class="o">=</span> <span class="p">[</span><span class="n">DIGIT_CLASS</span><span class="p">]</span><span class="o">*</span><span class="n">N_SAMPLES</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generando imágenes del dígito </span><span class="si">{</span><span class="n">DIGIT_CLASS</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+
+<span class="c1"># Generar imágenes</span>
+<span class="n">generated_images_subvp_cosine_predictor</span><span class="p">,</span> <span class="n">condition</span> <span class="o">=</span> <span class="n">diffusion_model_subvp_cosine_predictor</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+    <span class="n">n_samples</span><span class="o">=</span><span class="n">N_SAMPLES</span><span class="p">,</span>
+    <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span>
+    <span class="n">n_steps</span><span class="o">=</span><span class="n">N_STEPS</span>
+<span class="p">)</span>
+<span class="c1"># Mostrar imágenes generadas</span>
+<span class="n">show_images</span><span class="p">(</span><span class="n">generated_images_subvp_cosine_predictor</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Dígitos generados con SubVP Cosine: Predictor-Corrector&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">condition</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:22:33,862 — DiffusionModel — INFO — Generando 12 muestras con 2000 pasos</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Generando imágenes del dígito 3...
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_pruebas_validacion_92_2.png" src="../_images/notebooks_pruebas_validacion_92_2.png" />
+</div>
+</div>
+</section>
+<section id="id15">
+<h3>Flow ODE<a class="headerlink" href="#id15" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Configurando el modelo de difusión...&quot;</span><span class="p">)</span>
+<span class="c1"># Crear modelo de difusión utilizando el ModelFactory</span>
+<span class="n">diffusion_model_subvp_cosine_flow_ode</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">score_model_class</span><span class="o">=</span><span class="n">ScoreNet</span><span class="p">,</span>
+    <span class="n">is_conditional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">sde_name</span><span class="o">=</span><span class="s1">&#39;subvp_sde&#39;</span><span class="p">,</span>
+    <span class="n">sde_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;coef_beta&#39;</span><span class="p">:</span> <span class="mf">0.58</span><span class="p">,</span> <span class="s1">&#39;coef_score&#39;</span><span class="p">:</span> <span class="mf">1.46</span><span class="p">},</span>
+    <span class="n">sampler_name</span><span class="o">=</span><span class="s1">&#39;probability_flow_ode&#39;</span><span class="p">,</span>
+    <span class="n">scheduler_name</span><span class="o">=</span><span class="s1">&#39;cosine&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:25:26,793 — DiffusionModel — INFO — Modelo de difusión inicializado en dispositivo: cuda</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configurando el modelo de difusión...
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cargar un modelo pre-entrenado</span>
+<span class="n">diffusion_model_subvp_cosine_flow_ode</span><span class="o">.</span><span class="n">load_score_model</span><span class="p">(</span><span class="s2">&quot;../checkpoints/subvp_sde_cosine.pt&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:25:26,812 — DiffusionModel — INFO — Cargando modelo desde ../checkpoints/subvp_sde_cosine.pt</span>
+<span class="ansi-green-fg">2025-05-05 00:25:26,845 — DiffusionModel — INFO — Forma de datos cargada: torch.Size([3, 28, 28])</span>
+<span class="ansi-green-fg">2025-05-05 00:25:26,846 — DiffusionModel — INFO — Parámetros del modelo actualizados desde checkpoint</span>
+<span class="ansi-green-fg">2025-05-05 00:25:26,884 — DiffusionModel — INFO — Modelo de score inicializado correctamente</span>
+<span class="ansi-green-fg">2025-05-05 00:25:26,889 — DiffusionModel — INFO — Modelo cargado correctamente</span>
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DIGIT_CLASS</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="c1"># Parámetros para generación</span>
+<span class="n">N_SAMPLES</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">N_STEPS</span> <span class="o">=</span> <span class="mi">2000</span>
+
+<span class="c1"># Crear tensor de condición para el dígito especificado</span>
+<span class="n">condition</span> <span class="o">=</span> <span class="p">[</span><span class="n">DIGIT_CLASS</span><span class="p">]</span><span class="o">*</span><span class="n">N_SAMPLES</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generando imágenes del dígito </span><span class="si">{</span><span class="n">DIGIT_CLASS</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+
+<span class="c1"># Generar imágenes</span>
+<span class="n">generated_images_subvp_cosine_flow_ode</span><span class="p">,</span> <span class="n">condition</span> <span class="o">=</span> <span class="n">diffusion_model_subvp_cosine_flow_ode</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+    <span class="n">n_samples</span><span class="o">=</span><span class="n">N_SAMPLES</span><span class="p">,</span>
+    <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span>
+    <span class="n">n_steps</span><span class="o">=</span><span class="n">N_STEPS</span>
+<span class="p">)</span>
+<span class="c1"># Mostrar imágenes generadas</span>
+<span class="n">show_images</span><span class="p">(</span><span class="n">generated_images_subvp_cosine_flow_ode</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Dígitos generados con SubVP Cosine: Flow ODE&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">condition</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:25:26,938 — DiffusionModel — INFO — Generando 12 muestras con 2000 pasos</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Generando imágenes del dígito 3...
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_pruebas_validacion_96_2.png" src="../_images/notebooks_pruebas_validacion_96_2.png" />
+</div>
+</div>
+</section>
+<section id="id16">
+<h3>Exponential Integrator<a class="headerlink" href="#id16" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Configurando el modelo de difusión...&quot;</span><span class="p">)</span>
+<span class="c1"># Crear modelo de difusión utilizando el ModelFactory</span>
+<span class="n">diffusion_model_subvp_cosine_exponential</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">score_model_class</span><span class="o">=</span><span class="n">ScoreNet</span><span class="p">,</span>
+    <span class="n">is_conditional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">sde_name</span><span class="o">=</span><span class="s1">&#39;subvp_sde&#39;</span><span class="p">,</span>
+    <span class="n">sde_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;coef_beta&#39;</span><span class="p">:</span> <span class="mf">0.65</span><span class="p">,</span> <span class="s1">&#39;coef_score&#39;</span><span class="p">:</span> <span class="mf">1.42</span><span class="p">},</span>
+    <span class="n">sampler_name</span><span class="o">=</span><span class="s1">&#39;exponential_integrator&#39;</span><span class="p">,</span>
+    <span class="n">scheduler_name</span><span class="o">=</span><span class="s1">&#39;cosine&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:25:57,896 — DiffusionModel — INFO — Modelo de difusión inicializado en dispositivo: cuda</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configurando el modelo de difusión...
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cargar un modelo pre-entrenado</span>
+<span class="n">diffusion_model_subvp_cosine_exponential</span><span class="o">.</span><span class="n">load_score_model</span><span class="p">(</span><span class="s2">&quot;../checkpoints/subvp_sde_cosine.pt&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:25:57,910 — DiffusionModel — INFO — Cargando modelo desde ../checkpoints/subvp_sde_cosine.pt</span>
+<span class="ansi-green-fg">2025-05-05 00:25:57,934 — DiffusionModel — INFO — Forma de datos cargada: torch.Size([3, 28, 28])</span>
+<span class="ansi-green-fg">2025-05-05 00:25:57,936 — DiffusionModel — INFO — Parámetros del modelo actualizados desde checkpoint</span>
+<span class="ansi-green-fg">2025-05-05 00:25:57,968 — DiffusionModel — INFO — Modelo de score inicializado correctamente</span>
+<span class="ansi-green-fg">2025-05-05 00:25:57,974 — DiffusionModel — INFO — Modelo cargado correctamente</span>
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DIGIT_CLASS</span> <span class="o">=</span> <span class="mi">9</span>
+
+<span class="c1"># Parámetros para generación</span>
+<span class="n">N_SAMPLES</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">N_STEPS</span> <span class="o">=</span> <span class="mi">2500</span>
+
+<span class="c1"># Crear tensor de condición para el dígito especificado</span>
+<span class="n">condition</span> <span class="o">=</span> <span class="p">[</span><span class="n">DIGIT_CLASS</span><span class="p">]</span><span class="o">*</span><span class="n">N_SAMPLES</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generando imágenes del dígito </span><span class="si">{</span><span class="n">DIGIT_CLASS</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+
+<span class="c1"># Generar imágenes</span>
+<span class="n">generated_images_subvp_cosine_exponential</span><span class="p">,</span> <span class="n">condition</span> <span class="o">=</span> <span class="n">diffusion_model_subvp_cosine_exponential</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+    <span class="n">n_samples</span><span class="o">=</span><span class="n">N_SAMPLES</span><span class="p">,</span>
+    <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span>
+    <span class="n">n_steps</span><span class="o">=</span><span class="n">N_STEPS</span>
+<span class="p">)</span>
+<span class="c1"># Mostrar imágenes generadas</span>
+<span class="n">show_images</span><span class="p">(</span><span class="n">generated_images_subvp_cosine_exponential</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Dígitos generados con SubVP Cosine: Exponential Integrator&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">condition</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:25:57,995 — DiffusionModel — INFO — Generando 12 muestras con 2500 pasos</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Generando imágenes del dígito 9...
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_pruebas_validacion_100_2.png" src="../_images/notebooks_pruebas_validacion_100_2.png" />
+</div>
+</div>
+</section>
+</section>
+</section>
+<hr class="docutils" />
+<section id="Imputation">
+<h1>Imputation<a class="headerlink" href="#Imputation" title="Link to this heading"></a></h1>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">N_SAMPLES</span> <span class="o">=</span> <span class="mi">8</span>
+</pre></div>
+</div>
+</div>
+<section id="VE---Flow-ODE">
+<h2>VE - Flow ODE<a class="headerlink" href="#VE---Flow-ODE" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Configurando el modelo de difusión...&quot;</span><span class="p">)</span>
+<span class="c1"># Crear modelo de difusión utilizando el ModelFactory</span>
+<span class="n">diffusion_model_ve_flow_ode_imputation</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">score_model_class</span><span class="o">=</span><span class="n">ScoreNet</span><span class="p">,</span>
+    <span class="n">is_conditional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">sde_name</span><span class="o">=</span><span class="s1">&#39;ve_sde&#39;</span><span class="p">,</span>
+    <span class="n">sampler_name</span><span class="o">=</span><span class="s1">&#39;probability_flow_ode&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:26:21,499 — DiffusionModel — INFO — Modelo de difusión inicializado en dispositivo: cuda</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configurando el modelo de difusión...
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cargar un modelo pre-entrenado</span>
+<span class="n">diffusion_model_ve_flow_ode_imputation</span><span class="o">.</span><span class="n">load_score_model</span><span class="p">(</span><span class="s2">&quot;../checkpoints/ve_sde.pt&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:26:21,522 — DiffusionModel — INFO — Cargando modelo desde ../checkpoints/ve_sde.pt</span>
+<span class="ansi-green-fg">2025-05-05 00:26:21,557 — DiffusionModel — INFO — Forma de datos cargada: torch.Size([3, 28, 28])</span>
+<span class="ansi-green-fg">2025-05-05 00:26:21,559 — DiffusionModel — INFO — Parámetros del modelo actualizados desde checkpoint</span>
+<span class="ansi-green-fg">2025-05-05 00:26:21,596 — DiffusionModel — INFO — Modelo de score inicializado correctamente</span>
+<span class="ansi-green-fg">2025-05-05 00:26:21,601 — DiffusionModel — INFO — Modelo cargado correctamente</span>
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">generative_diffusion.controllable</span><span class="w"> </span><span class="kn">import</span> <span class="n">random_mask</span>
+
+<span class="c1"># Obtener un batch de imágenes del dataloader</span>
+<span class="n">images</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">train_dataloader</span><span class="p">))</span>
+<span class="n">images</span> <span class="o">=</span> <span class="n">images</span><span class="p">[:</span><span class="n">N_SAMPLES</span><span class="p">]</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[:</span><span class="n">N_SAMPLES</span><span class="p">]</span>
+
+<span class="c1"># mask = center_square_mask(images, keep_ratio=0.4)</span>
+<span class="c1"># mask = border_mask(images, border_ratio=0.3)</span>
+<span class="n">mask</span> <span class="o">=</span> <span class="n">random_mask</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">prob</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Imputando las imágenes enmascaradas...&quot;</span><span class="p">)</span>
+<span class="c1"># Realizar la imputación</span>
+<span class="n">imputed_images</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span> <span class="n">diffusion_model_ve_flow_ode_imputation</span><span class="o">.</span><span class="n">impute</span><span class="p">(</span>
+    <span class="n">image</span><span class="o">=</span><span class="n">images</span><span class="p">,</span>
+    <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span>
+    <span class="n">condition</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Mostrar resultados de imputación</span>
+<span class="n">show_imputation_results</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">imputed_images</span><span class="p">,</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Resultados de imputación: VE, Flow ODE&quot;</span><span class="p">,</span> <span class="n">original_labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">imputed_labels</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:26:21,645 — DiffusionModel — INFO — Generando 8 muestras con 500 pasos</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Imputando las imágenes enmascaradas...
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_pruebas_validacion_106_2.png" src="../_images/notebooks_pruebas_validacion_106_2.png" />
+</div>
+</div>
+</section>
+<section id="VP-Linear---Exponencial-Integrator">
+<h2>VP Linear - Exponencial Integrator<a class="headerlink" href="#VP-Linear---Exponencial-Integrator" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Configurando el modelo de difusión...&quot;</span><span class="p">)</span>
+<span class="c1"># Crear modelo de difusión utilizando el ModelFactory</span>
+<span class="n">diffusion_model_vp_linear_exponential_integrator_imputation</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">score_model_class</span><span class="o">=</span><span class="n">ScoreNet</span><span class="p">,</span>
+    <span class="n">is_conditional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">sde_name</span><span class="o">=</span><span class="s1">&#39;vp_sde&#39;</span><span class="p">,</span>
+    <span class="n">sampler_name</span><span class="o">=</span><span class="s1">&#39;exponential_integrator&#39;</span><span class="p">,</span>
+    <span class="n">scheduler_name</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:26:29,530 — DiffusionModel — INFO — Modelo de difusión inicializado en dispositivo: cuda</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configurando el modelo de difusión...
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cargar un modelo pre-entrenado</span>
+<span class="n">diffusion_model_vp_linear_exponential_integrator_imputation</span><span class="o">.</span><span class="n">load_score_model</span><span class="p">(</span><span class="s2">&quot;../checkpoints/vp_sde_linear.pt&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:26:29,551 — DiffusionModel — INFO — Cargando modelo desde ../checkpoints/vp_sde_linear.pt</span>
+<span class="ansi-green-fg">2025-05-05 00:26:29,585 — DiffusionModel — INFO — Forma de datos cargada: torch.Size([3, 28, 28])</span>
+<span class="ansi-green-fg">2025-05-05 00:26:29,587 — DiffusionModel — INFO — Parámetros del modelo actualizados desde checkpoint</span>
+<span class="ansi-green-fg">2025-05-05 00:26:29,624 — DiffusionModel — INFO — Modelo de score inicializado correctamente</span>
+<span class="ansi-green-fg">2025-05-05 00:26:29,629 — DiffusionModel — INFO — Modelo cargado correctamente</span>
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">generative_diffusion.controllable</span><span class="w"> </span><span class="kn">import</span> <span class="n">random_mask</span>
+
+<span class="c1"># Obtener un batch de imágenes del dataloader</span>
+<span class="n">images</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">train_dataloader</span><span class="p">))</span>
+<span class="n">images</span> <span class="o">=</span> <span class="n">images</span><span class="p">[:</span><span class="n">N_SAMPLES</span><span class="p">]</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[:</span><span class="n">N_SAMPLES</span><span class="p">]</span>
+
+<span class="c1"># mask = center_square_mask(images, keep_ratio=0.4)</span>
+<span class="c1"># mask = border_mask(images, border_ratio=0.3)</span>
+<span class="n">mask</span> <span class="o">=</span> <span class="n">random_mask</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">prob</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Imputando las imágenes enmascaradas...&quot;</span><span class="p">)</span>
+<span class="c1"># Realizar la imputación</span>
+<span class="n">imputed_images</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">diffusion_model_vp_linear_exponential_integrator_imputation</span><span class="o">.</span><span class="n">impute</span><span class="p">(</span>
+    <span class="n">image</span><span class="o">=</span><span class="n">images</span><span class="p">,</span>
+    <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span>
+    <span class="n">condition</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Mostrar resultados de imputación</span>
+<span class="n">show_imputation_results</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">imputed_images</span><span class="p">,</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Resultados de imputación: VP Linear, Exponential Integrator&quot;</span><span class="p">,</span> <span class="n">original_labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">imputed_labels</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:26:29,680 — DiffusionModel — INFO — Generando 8 muestras con 500 pasos</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Imputando las imágenes enmascaradas...
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_pruebas_validacion_110_2.png" src="../_images/notebooks_pruebas_validacion_110_2.png" />
+</div>
+</div>
+</section>
+<section id="VP-Cosine---Predictor-Corrector">
+<h2>VP Cosine - Predictor Corrector<a class="headerlink" href="#VP-Cosine---Predictor-Corrector" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Configurando el modelo de difusión...&quot;</span><span class="p">)</span>
+<span class="c1"># Crear modelo de difusión utilizando el ModelFactory</span>
+<span class="n">diffusion_model_vp_cosine_predictor_corrector_imputation</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">score_model_class</span><span class="o">=</span><span class="n">ScoreNet</span><span class="p">,</span>
+    <span class="n">is_conditional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">sde_name</span><span class="o">=</span><span class="s1">&#39;vp_sde&#39;</span><span class="p">,</span>
+    <span class="n">sampler_name</span><span class="o">=</span><span class="s1">&#39;predictor_corrector&#39;</span><span class="p">,</span>
+    <span class="n">scheduler_name</span><span class="o">=</span><span class="s1">&#39;cosine&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:26:35,486 — DiffusionModel — INFO — Modelo de difusión inicializado en dispositivo: cuda</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configurando el modelo de difusión...
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cargar un modelo pre-entrenado</span>
+<span class="n">diffusion_model_vp_cosine_predictor_corrector_imputation</span><span class="o">.</span><span class="n">load_score_model</span><span class="p">(</span><span class="s2">&quot;../checkpoints/vp_sde_cosine.pt&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:26:35,513 — DiffusionModel — INFO — Cargando modelo desde ../checkpoints/vp_sde_cosine.pt</span>
+<span class="ansi-green-fg">2025-05-05 00:26:35,563 — DiffusionModel — INFO — Forma de datos cargada: torch.Size([3, 28, 28])</span>
+<span class="ansi-green-fg">2025-05-05 00:26:35,566 — DiffusionModel — INFO — Parámetros del modelo actualizados desde checkpoint</span>
+<span class="ansi-green-fg">2025-05-05 00:26:35,613 — DiffusionModel — INFO — Modelo de score inicializado correctamente</span>
+<span class="ansi-green-fg">2025-05-05 00:26:35,617 — DiffusionModel — INFO — Modelo cargado correctamente</span>
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">generative_diffusion.controllable</span><span class="w"> </span><span class="kn">import</span> <span class="n">random_mask</span>
+
+<span class="c1"># Obtener un batch de imágenes del dataloader</span>
+<span class="n">images</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">train_dataloader</span><span class="p">))</span>
+<span class="n">images</span> <span class="o">=</span> <span class="n">images</span><span class="p">[:</span><span class="n">N_SAMPLES</span><span class="p">]</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[:</span><span class="n">N_SAMPLES</span><span class="p">]</span>
+
+<span class="c1"># mask = center_square_mask(images, keep_ratio=0.4)</span>
+<span class="c1"># mask = border_mask(images, border_ratio=0.3)</span>
+<span class="n">mask</span> <span class="o">=</span> <span class="n">random_mask</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">prob</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Imputando las imágenes enmascaradas...&quot;</span><span class="p">)</span>
+<span class="c1"># Realizar la imputación</span>
+<span class="n">imputed_images</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">diffusion_model_vp_cosine_predictor_corrector_imputation</span><span class="o">.</span><span class="n">impute</span><span class="p">(</span>
+    <span class="n">image</span><span class="o">=</span><span class="n">images</span><span class="p">,</span>
+    <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span>
+    <span class="n">condition</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Mostrar resultados de imputación</span>
+<span class="n">show_imputation_results</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">imputed_images</span><span class="p">,</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Resultados de imputación: VP Cosine, Predictor-Corrector&quot;</span><span class="p">,</span> <span class="n">original_labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">imputed_labels</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2025-05-05 00:26:35,675 — DiffusionModel — INFO — Generando 8 muestras con 500 pasos</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Imputando las imágenes enmascaradas...
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_pruebas_validacion_114_2.png" src="../_images/notebooks_pruebas_validacion_114_2.png" />
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pie de página">
+        <a href="simple_demo.html" class="btn btn-neutral float-left" title="Difusión Generativa: Entrenamiento y Generación con MNIST a Color" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Anterior</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Derechos de autor 2025, Manuel Muñoz.</p>
+  </div>
+
+  Compilado con <a href="https://www.sphinx-doc.org/">Sphinx</a> usando un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    proporcionado por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
