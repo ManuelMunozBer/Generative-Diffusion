@@ -2,24 +2,22 @@ Metadata-Version: 2.4
 Name: generative-diffusion
 Version: 0.1.0
 Summary: Toolkit modular en Python para modelos generativos basados en difusión
-Author-email: Manuel MUñoz <manuel.munnozb@estudiante.uam.es>
+Author-email: Manuel Muñoz <manuel.munnozb@estudiante.uam.es>, Daniel Ortiz <daniel.ortizbuzarra@estudiante.uam.es>
 License: MIT
 Requires-Python: >=3.8
 Description-Content-Type: text/markdown
-Requires-Dist: torch==2.5.1
-Requires-Dist: torchvision==0.20.1
-Requires-Dist: numpy==2.0.2
-Requires-Dist: scipy==1.13.1
-Requires-Dist: matplotlib==3.9.4
-Requires-Dist: tqdm==4.67.1
+License-File: LICENSE
+Requires-Dist: torch<2.6,>=2.5.0
+Requires-Dist: torchvision<0.21,>=0.20.0
+Requires-Dist: numpy<2.2,>=1.24
+Requires-Dist: scipy<1.14,>=1.9
+Requires-Dist: matplotlib<3.10,>=3.6
+Requires-Dist: tqdm<4.68,>=4.64
+Requires-Dist: colorlog
 Provides-Extra: dev
-Requires-Dist: pytest>=8; extra == "dev"
-Requires-Dist: pytest-cov; extra == "dev"
 Requires-Dist: black>=24.4; extra == "dev"
 Requires-Dist: ruff>=0.4; extra == "dev"
-Requires-Dist: isort>=5.13; extra == "dev"
-Requires-Dist: pipreqs; extra == "dev"
-Requires-Dist: build; extra == "dev"
+Dynamic: license-file
 
 # Generative‑Diffusion
 
@@ -82,12 +80,17 @@ pyproject.toml
 README.md
 ```
 
+### 👥 Autores
+
+- Manuel Muñoz Bermejo - [manuel.munnozb@estudiante.uam.es]
+- Daniel Ortiz Buzarra - [daniel.ortizbuzarra@estudiante.uam.es]
+
+Si utilizas este código en tus trabajos, por favor, **cita a los autores y enlaza este repositorio.**
+
 ## Desarrollo
 
-* **Tests**: `pytest -q`
 * **Formateo**: `black .`
 * **Linter**: `ruff check . --fix`
-* **CI**: ver `.github/workflows/ci.yml`
 
 ---
 

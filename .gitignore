@@ -22,9 +22,10 @@ __pycache__/
 # Ignorar configuraciones de Jupyter
 .ipynb_checkpoints/
 
-# Ignorar datasets y resultados temporales si es necesario
+# Ignorar datasets y archivos de paquete build
 data/
-results/
+dist/
+*.egg-info/
 
 # Otros archivos de entorno
 .env
