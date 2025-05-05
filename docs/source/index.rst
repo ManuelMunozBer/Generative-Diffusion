@@ -1,5 +1,10 @@
 .. generative_diffusion documentation master file
 
+Demo
+==========================
+
+- `Demo de generación <https://colab.research.google.com/drive/1oQLH2MrFySWSYcIiAEjTfdHL5xJ_Qm_y?usp=sharing>`_
+
 Welcome to generative_diffusion's documentation!
 =======================================================
 
@@ -106,8 +111,3 @@ Examples
 
    notebooks/simple_demo
    notebooks/pruebas_validacion
-
-Notebooks en Google Colab
-==========================
-
-- `Demo de generación <https://colab.research.google.com/drive/1oQLH2MrFySWSYcIiAEjTfdHL5xJ_Qm_y?usp=sharing>`_
