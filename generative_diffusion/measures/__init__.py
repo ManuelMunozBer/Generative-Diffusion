@@ -1,4 +1,12 @@
-# measures/__init__.py
+# -----------------------------------------------------------------------------
+# Proyecto: Generative AI Diffusion System - AA3 2024/2025
+# Archivo:  measures/__init__.py
+# Autores:
+#   - Manuel Muñoz Bermejo (manuel.munnozb@estudiante.uam.es)
+#   - Daniel Ortiz Buzarra (daniel.ortizbuzarra@estudiante.uam.es)
+# Licencia: MIT
+# -----------------------------------------------------------------------------
+
 """
 Métricas estándar para evaluar modelos de difusión:
 

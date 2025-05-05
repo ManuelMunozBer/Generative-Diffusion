@@ -1,4 +1,12 @@
-# schedulers/__init__.py
+# -----------------------------------------------------------------------------
+# Proyecto: Generative AI Diffusion System - AA3 2024/2025
+# Archivo:  schedulers/__init__.py
+# Autores:
+#   - Manuel Muñoz Bermejo (manuel.munnozb@estudiante.uam.es)
+#   - Daniel Ortiz Buzarra (daniel.ortizbuzarra@estudiante.uam.es)
+# Licencia: MIT
+# -----------------------------------------------------------------------------
+
 """
 Colección de *noise schedulers* para modelos de difusión.
 

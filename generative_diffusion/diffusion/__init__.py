@@ -1,4 +1,12 @@
-# diffusion/__init__.py
+# -----------------------------------------------------------------------------
+# Proyecto: Generative AI Diffusion System - AA3 2024/2025
+# Archivo:  diffusion/__init__.py
+# Autores:
+#   - Manuel Muñoz Bermejo (manuel.munnozb@estudiante.uam.es)
+#   - Daniel Ortiz Buzarra (daniel.ortizbuzarra@estudiante.uam.es)
+# Licencia: MIT
+# -----------------------------------------------------------------------------
+
 """
 Núcleo de alto nivel: creación, entrenamiento y uso de modelos de difusión.
 """

@@ -59,12 +59,17 @@ pyproject.toml
 README.md
 ```
 
+### 👥 Autores
+
+- Manuel Muñoz Bermejo - [email1@correo.com]
+- Daniel Ortiz Buzarra - [email2@correo.com]
+
+Si utilizas este código en tus trabajos, por favor, **cita a los autores y enlaza este repositorio.**
+
 ## Desarrollo
 
-* **Tests**: `pytest -q`
 * **Formateo**: `black .`
 * **Linter**: `ruff check . --fix`
-* **CI**: ver `.github/workflows/ci.yml`
 
 ---
 

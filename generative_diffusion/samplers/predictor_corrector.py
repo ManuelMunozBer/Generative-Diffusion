@@ -1,4 +1,12 @@
-# samplers/predictor_corrector.py
+# -----------------------------------------------------------------------------
+# Proyecto: Generative AI Diffusion System - AA3 2024/2025
+# Archivo:  samplers/predictor_corrector.py
+# Autores:
+#   - Manuel Muñoz Bermejo (manuel.munnozb@estudiante.uam.es)
+#   - Daniel Ortiz Buzarra (daniel.ortizbuzarra@estudiante.uam.es)
+# Licencia: MIT
+# -----------------------------------------------------------------------------
+
 from __future__ import annotations
 
 from typing import Callable, Optional, Tuple

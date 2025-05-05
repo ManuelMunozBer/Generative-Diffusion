@@ -1,4 +1,12 @@
-# sde/ve_sde.py
+# -----------------------------------------------------------------------------
+# Proyecto: Generative AI Diffusion System - AA3 2024/2025
+# Archivo:  sde/ve_sde.py
+# Autores:
+#   - Manuel Muñoz Bermejo (manuel.munnozb@estudiante.uam.es)
+#   - Daniel Ortiz Buzarra (daniel.ortizbuzarra@estudiante.uam.es)
+# Licencia: MIT
+# -----------------------------------------------------------------------------
+
 from __future__ import annotations
 
 import torch
