@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Difusión Generativa: Entrenamiento y Generación con MNIST a Color &mdash; documentación de generative_diffusion - 1.0</title>
+  <title>Generative Diffusion: Entrenamiento y Generación con MNIST a Color &mdash; documentación de generative_diffusion - 1.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
@@ -48,7 +48,7 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Difusión Generativa: Entrenamiento y Generación con MNIST a Color</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Generative Diffusion: Entrenamiento y Generación con MNIST a Color</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#1.-Cargar-y-preparar-un-dataset-MNIST-a-color">1. Cargar y preparar un dataset MNIST a color</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#2.-Configurar-el-modelo-de-difusión">2. Configurar el modelo de difusión</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#3.-Entrenar-el-modelo">3. Entrenar el modelo</a></li>
@@ -72,7 +72,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Difusión Generativa: Entrenamiento y Generación con MNIST a Color</li>
+      <li class="breadcrumb-item active">Generative Diffusion: Entrenamiento y Generación con MNIST a Color</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/notebooks/simple_demo.ipynb.txt" rel="nofollow"> Ver código fuente de la página</a>
       </li>
@@ -82,9 +82,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="Difusión-Generativa:-Entrenamiento-y-Generación-con-MNIST-a-Color">
-<h1>Difusión Generativa: Entrenamiento y Generación con MNIST a Color<a class="headerlink" href="#Difusión-Generativa:-Entrenamiento-y-Generación-con-MNIST-a-Color" title="Link to this heading"></a></h1>
-<p>Este notebook demuestra cómo utilizar el framework de difusión generativa para:</p>
+  <section id="Generative-Diffusion:-Entrenamiento-y-Generación-con-MNIST-a-Color">
+<h1>Generative Diffusion: Entrenamiento y Generación con MNIST a Color<a class="headerlink" href="#Generative-Diffusion:-Entrenamiento-y-Generación-con-MNIST-a-Color" title="Link to this heading"></a></h1>
+<p>Este notebook demuestra cómo utilizar el paquete de difusión generativa desarrollado (generative_diffusion) para:</p>
 <ol class="arabic">
 <li><p>Cargar y preparar un dataset MNIST a color</p></li>
 <li><p>Configurar modelo de difusión</p></li>
@@ -97,9 +97,7 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">&quot;..&quot;</span><span class="p">))</span>  <span class="c1"># Añadir raíz del proyecto al path</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">generative_diffusion</span> <span class="c1"># Instalamos el paquete desarrollado</span>
 </pre></div>
 </div>
 </div>
