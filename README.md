@@ -61,8 +61,8 @@ README.md
 
 ### 👥 Autores
 
-- Manuel Muñoz Bermejo - [email1@correo.com]
-- Daniel Ortiz Buzarra - [email2@correo.com]
+- Manuel Muñoz Bermejo - [manuel.munnozb@estudiante.uam.es]
+- Daniel Ortiz Buzarra - [daniel.ortizbuzarra@estudiante.uam.es]
 
 Si utilizas este código en tus trabajos, por favor, **cita a los autores y enlaza este repositorio.**
 
