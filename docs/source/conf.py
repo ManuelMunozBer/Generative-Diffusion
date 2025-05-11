@@ -7,8 +7,8 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "generative_diffusion"
-copyright = "2025, Manuel Muñoz"
-author = "Manuel Muñoz"
+copyright = "2025, Daniel Ortiz & Manuel Muñoz"
+author = "Daniel Ortiz, Manuel Muñoz"
 release = "1.0"
 
 # -- General configuration ---------------------------------------------------
