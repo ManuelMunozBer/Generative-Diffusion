@@ -7,8 +7,8 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "generative_diffusion"
-copyright = "2025, Manuel Muñoz"
-author = "Manuel Muñoz"
+copyright = "2025, Daniel Ortiz & Manuel Muñoz"
+author = "Daniel Ortiz, Manuel Muñoz"
 release = "1.0"
 
 # -- General configuration ---------------------------------------------------
@@ -30,6 +30,11 @@ language = "es"
 
 import shutil
 import os
+import sys
+
+# Añadir la raíz del proyecto al path
+sys.path.insert(0, os.path.abspath(os.path.join(__file__, "../../..")))
+
 
 # Copiar notebooks cada vez que compiles
 NOTEBOOKS_SRC = os.path.abspath(os.path.join(__file__, "../../../demo_notebooks"))
